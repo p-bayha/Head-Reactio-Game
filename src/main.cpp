@@ -14,7 +14,7 @@ int main() {
     }
 
     // Run main detection loop
-    faceDetector.run();
+    faceDetector.detectFace();
 
     return 0;
 }
