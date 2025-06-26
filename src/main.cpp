@@ -1,7 +1,16 @@
 #include "FaceDetector.hpp"
+#include "Player.hpp"
 #include <string>
 
 int main() {
+    // Create a Player and get the name
+    Player player;
+    player.inputName();
+
+    // Print player info to confirm input 
+    ///@brief later also choose game mode and display information about game
+    player.printPlayerInfo();
+
     // Path to the Haar cascade XML file for face detection
     const std::string cascadeFilePath = "haarcascade_frontalface_default.xml";
 

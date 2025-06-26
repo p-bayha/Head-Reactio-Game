@@ -16,6 +16,7 @@ set(INC_DIR ${CMAKE_SOURCE_DIR}/inc)
 set(SOURCES
     ${SRC_DIR}/main.cpp
     ${SRC_DIR}/FaceDetector.cpp
+    ${SRC_DIR}/Player.cpp
 )
 
 # Create executable
