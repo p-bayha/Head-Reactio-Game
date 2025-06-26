@@ -1,21 +1,34 @@
-#ifndef GAME_H
-#define GAME_H
+#ifndef FACEDETECTOR_HPP
+#define FACEDETECTOR_HPP
 
 #include <opencv2/opencv.hpp>
 #include <string>
 
-class Game {
+// FaceDetector: Handles face detection using OpenCV
+class FaceDetector {
 public:
-    Game(const std::string& cascadePath);
-    ~Game();
+    // Constructor: Load the Haar cascade for face detection
+    FaceDetector(const std::string& cascadePath);
+
+    // Destructor: Release all resources
+    ~FaceDetector();
+
+    // Initialises the camera, window and checks resources
     bool initialize();
-    void run();
+
+    // Main loop: Capture and process frames
+    void detectFace();
+
 private:
-    cv::VideoCapture cap;
-    cv::CascadeClassifier faceCascade;
-    const std::string windowName = "Face Detection";
-    int frameWidth;
-    int frameHeight;
+    // Releases camera and destroys OpenCV windows
+    void releaseResources();
+
+    cv::VideoCapture cap; // Video capture object
+    cv::CascadeClassifier faceCascade; // Detect face in the frame
+    const std::string m_windowName = "Face Detection"; // Window name for display
+
+    int m_frameWidth; // Width of the camera frame
+    int m_frameHeight; // Height of the camera frame
 };
 
-#endif // GAME_H
+#endif // FACEDETECTOR_HPP
