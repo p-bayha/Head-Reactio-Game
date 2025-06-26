@@ -1,4 +1,4 @@
-#include "Game.hpp"
+#include "FaceDetector.hpp"
 #include <iostream>
 
 Game::Game(const std::string& cascadePath) : frameWidth(0), frameHeight(0) {

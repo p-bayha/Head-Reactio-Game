@@ -1,4 +1,4 @@
-#include "Game.hpp"
+#include "FaceDetector.hpp"
 #include <string>
 
 int main() {
