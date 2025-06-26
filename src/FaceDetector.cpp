@@ -2,7 +2,7 @@
 #include <iostream>
 
 // Constructor: Load the Haar cascade for face detection
-FaceDetector::FaceDetector(const std::string& cascadePath) : frameWidth(0), frameHeight(0) {
+FaceDetector::FaceDetector(const std::string& cascadePath) : m_frameWidth(0), m_frameHeight(0) {
     if (!faceCascade.load(cascadePath)) {
         std::cerr << "Error: COuld not load Haar cascade file from " << cascadePath << std::endl;
     }
@@ -29,15 +29,15 @@ bool FaceDetector::initialize() {
         return false;
     }
 
-    frameWidth = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_WIDTH));
-    frameHeight = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_HEIGHT));
+    m_frameWidth = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_WIDTH));
+    m_frameHeight = static_cast<int>(cap.get(cv::CAP_PROP_FRAME_HEIGHT));
 
     // If camera doesn't provide a valid resolution, set to default 
-    if (frameWidth == 0 || frameHeight == 0) {
-        frameWidth = 640;
-        frameHeight = 480;
-        cap.set(cv::CAP_PROP_FRAME_WIDTH, frameWidth);
-        cap.set(cv::CAP_PROP_FRAME_HEIGHT, frameHeight);
+    if (m_frameWidth == 0 || m_frameHeight == 0) {
+        m_frameWidth = 640;
+        m_frameHeight = 480;
+        cap.set(cv::CAP_PROP_FRAME_WIDTH, m_frameWidth);
+        cap.set(cv::CAP_PROP_FRAME_HEIGHT, m_frameHeight);
     }
 
     if (faceCascade.empty()) {
@@ -45,17 +45,17 @@ bool FaceDetector::initialize() {
         return false;
     }
 
-    cv::namedWindow(windowName, cv::WINDOW_AUTOSIZE);
+    cv::namedWindow(m_windowName, cv::WINDOW_AUTOSIZE);
     return true;
 }
 
 // Main loop: Capture and process frames
-void FaceDetector::run() {
+void FaceDetector::detectFace() {
     if (!cap.isOpened() || faceCascade.empty()) {
         std::cerr << "Error: FaceDetection not properly initialized." << std::endl;
         return;
     }
-    
+
     cv::Mat frame;
     while (true) {
         cap >> frame;
@@ -77,7 +77,7 @@ void FaceDetector::run() {
         }
 
         // Display the frame
-        cv::imshow(windowName, frame);
+        cv::imshow(m_windowName, frame);
 
         // Exit loop if ESC key (ASCII 27) is pressed 
         int key = cv::waitKey(10);

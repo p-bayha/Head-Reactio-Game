@@ -17,7 +17,7 @@ public:
     bool initialize();
 
     // Main loop: Capture and process frames
-    void run();
+    void detectFace();
 
 private:
     // Releases camera and destroys OpenCV windows
@@ -25,10 +25,10 @@ private:
 
     cv::VideoCapture cap; // Video capture object
     cv::CascadeClassifier faceCascade; // Detect face in the frame
-    const std::string windowName = "Face Detection"; // Window name for display
-    
-    int frameWidth; // Width of the camera frame
-    int frameHeight; // Height of the camera frame
+    const std::string m_windowName = "Face Detection"; // Window name for display
+
+    int m_frameWidth; // Width of the camera frame
+    int m_frameHeight; // Height of the camera frame
 };
 
 #endif // FACEDETECTOR_HPP
