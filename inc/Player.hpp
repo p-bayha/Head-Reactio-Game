@@ -16,9 +16,6 @@ public:
     // Default destructor
     ~Player() = default;
 
-    // Prompts the user to input their name via terminal.
-    void inputName();
-
     /// @brief Sets the player's name
     /// @param name The new name for the player.
     void setName(const std::string& name);
@@ -37,9 +34,6 @@ public:
 
     // Gets the player's score.
     int getScore() const;
-
-    // Prints the player's name and score to the terminal.
-    void printPlayerInfo() const;
 
 private:
     std::string m_name {}; // Default initialized empty string

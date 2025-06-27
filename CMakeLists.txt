@@ -17,6 +17,7 @@ set(SOURCES
     ${SRC_DIR}/main.cpp
     ${SRC_DIR}/FaceDetector.cpp
     ${SRC_DIR}/Player.cpp
+    ${SRC_DIR}/GUI.cpp
 )
 
 # Create executable
