@@ -40,9 +40,6 @@ public:
 
     // Shows final score and player name
     void displayFinalScore(const Player& player);
-
-    // checks if key to close loop is presses (ESC)
-    void checkForExitInput();
 };
 
 #endif // GUI_HPP

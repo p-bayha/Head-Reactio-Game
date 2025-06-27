@@ -33,7 +33,7 @@ public:
     void setScore(int score);
 
     // Gets the player's score.
-    int getScore() const;
+    int getScore() const; //TO DO evtl. in GUI
 
 private:
     std::string m_name {}; // Default initialized empty string
