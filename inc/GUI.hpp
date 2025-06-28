@@ -17,25 +17,25 @@ public:
     // Default destructor
     ~GUI() = default;
 
-    // Displays the menu in the terminal.
+    // Displays the welcome menu in the terminal.
     void displayMenu() const;
 
     /// @brief Prompts the user to input their name via terminal.
-    /// @return playerName
+    /// @return name
     std::string inputName();
 
     // Prints the player's name and score to the terminal.
     void printPlayerInfo(const Player& player) const;
 
-    /// @brief Asks GameMode from player.
-    /// @return GameMode (1 or 2)
+    /// @brief Let's the player choose the game mode.
+    /// @return Chosen game mode (1 or 2)
     int askGameMode() const;
 
-    /// @brief Shows game window including objects and score
-    /// @note braucht noch parameter wie Kamera-Frame, Gesichtsposition etc.
+    /// @brief Shows game window including objects (in the future) and score
+    /// @param detector FaceDetector instance passed by reference.
     void displayGameWindow(FaceDetector& detector);
 
-    // shows GameOver window (f.g. "Game Over" + ESC)
+    // Shows a terminal "Game Over" screen ("Game Over" + ESC can be added as text later)
     void displayGameOver() const;
 
     // Shows final score and player name

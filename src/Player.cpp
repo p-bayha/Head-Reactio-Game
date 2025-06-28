@@ -1,5 +1,4 @@
 #include "Player.hpp"
-#include "GUI.hpp"
 #include <iostream>
 
 //Sets the player's name

@@ -24,15 +24,15 @@ public:
     std::string getName() const;
 
     ///@brief Changes the player's score.
-    ///@param delta Score change (can be negative).
+    ///@param delta Amount to add/subtract from the score (can be negative).
     void changeScore(int delta);
 
-    /// @brief Sets the player's score directly.
+    /// @brief Sets the player's score.
     //         Score will be reduced to zero if a negative value is passed.
     /// @param score The new score value.
     void setScore(int score);
 
-    // Gets the player's score.
+    // Gets the current player's score.
     int getScore() const; //TO DO evtl. in GUI
 
 private:

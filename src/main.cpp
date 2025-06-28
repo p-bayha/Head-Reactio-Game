@@ -4,18 +4,17 @@
 #include <string>
 
 int main() {
-    GUI gui;
-    Player player;
+    GUI gui; // Interface handler
+    Player player; // Game player instance
 
-    // Menu, welcome and enter player name
+    // Show menu and input player name
     gui.displayMenu();
-    std::string name = gui.inputName();
-    player.setName(name);
+    player.setName(gui.inputName());
 
-    // choose game mode
+    // Choose game mode (future: part of game mode class maybe)
     int gameMode = gui.askGameMode();
 
-    // show player information
+    // Show player information
     gui.printPlayerInfo(player);
 
     // Path to the Haar cascade XML file for face detection
@@ -23,9 +22,15 @@ int main() {
 
     // Create FaceDetector instance for face detection
     FaceDetector faceDetector(cascadeFilePath);
+
     if (!faceDetector.initialize()) {
         std::cerr << "Initialization failed!" << std::endl;
         return 1; 
+    }
+
+    if (!faceDetector.isInitialized()) {
+        std::cerr << "Detector not ready." << std::endl;
+        return 1;
     }
 
     // Start game

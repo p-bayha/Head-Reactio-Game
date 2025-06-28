@@ -61,20 +61,40 @@ int GUI::askGameMode() const {
 
         if (std::cin.fail() || (mode != 1 && mode != 2)) {
             std::cin.clear(); // clear error-flag
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // flush input
             std::cout << "Invalid input. Please enter 1 or 2: ";
         } 
         else {
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // flush remaining
             return mode;
         } 
     }
 }
 
-
-
 // TO DO: Show window from FaceDetector
 void GUI::displayGameWindow(FaceDetector& detector) {
-    std::cout << "[Game] Starting Face Detection...\n";
-    detector.detectFace();
+    const std::string windowName = "Face Detection";
+    cv::namedWindow(windowName, cv::WINDOW_AUTOSIZE);
+
+    while(true) {
+        cv::Mat frame = detector.getProcessedFrame();
+
+    if (frame.empty()) {
+        std::cerr << "Error: FaceDetection not properly initialized." << std::endl;
+        return;
+    }
+
+    // Display the frame
+    cv::imshow(windowName, frame);
+
+    // Exit loop if ESC key (ASCII 27) is pressed 
+    int key = cv::waitKey(10);
+    if (key == 27) {
+        break; 
+    }
+    }
+
+    cv::destroyWindow(windowName);
 }
 
 // Shows Game Over screen
