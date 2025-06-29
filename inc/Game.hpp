@@ -1,8 +1,14 @@
-#ifndef GAME_H
-#define GAME_H
+#ifndef GAME_HPP
+#define GAME_HPP
 
 #include <opencv2/opencv.hpp>
 #include <string>
+#include <vector> //
+#include <memory> //
+
+#include "Circle.hpp" //
+#include "GameObject.hpp" //
+#include "Utils.hpp" //
 
 class Game {
 public:
@@ -11,11 +17,17 @@ public:
     bool initialize();
     void run();
 private:
+    void spawnObjects(); //
+    void updateObjects(cv::Mat& frame, const std::vector<cv::Rect>& faces); //
+
     cv::VideoCapture cap;
     cv::CascadeClassifier faceCascade;
     const std::string windowName = "Face Detection";
+
+    std::vector<std::shared_ptr<GameObject>> objects; //
     int frameWidth;
     int frameHeight;
+    int spawnTimer = 0; //
 };
 
-#endif // GAME_H
+#endif // GAME_HPP
