@@ -7,6 +7,7 @@
 #include <memory> //
 
 #include "Circle.hpp" //
+#include "Square.hpp" //
 #include "GameObject.hpp" //
 #include "Utils.hpp" //
 
@@ -28,6 +29,7 @@ private:
     int frameWidth;
     int frameHeight;
     int spawnTimer = 0; //
+    int mode = 1; //- // Default Mode 1, kannst per Konsole setzen
 };
 
 #endif // GAME_HPP

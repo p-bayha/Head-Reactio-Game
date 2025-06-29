@@ -42,14 +42,36 @@ bool Game::initialize() {
 void Game::spawnObjects() {
     if (spawnTimer++ >= 20) {
         spawnTimer = 0;
-        cv::Scalar color = (std::rand() % 2 == 0) ? cv::Scalar(0, 0, 255) : cv::Scalar(0, 255, 0);
+
         int size = 20 + (std::rand() % 31);
         float speed = 5.0f + static_cast<float>(std::rand() % 50) / 10.0f;
         Position pos{ std::rand() % frameWidth, 0 };
 
-        objects.push_back(std::make_shared<Circle>(color, Size{ size, size }, Speed{ speed }, pos));
+        if (mode == 1) {
+            // Mode 1: nur Kreise in rot, blau, grün
+            cv::Scalar color;
+            int randColor = std::rand() % 3;
+            if (randColor == 0) color = cv::Scalar(0, 0, 255); // Rot
+            else if (randColor == 1) color = cv::Scalar(255, 0, 0); // Blau
+            else color = cv::Scalar(0, 255, 0); // Grün
+            objects.push_back(std::make_shared<Circle>(color, Size{ size, size }, Speed{ speed }, pos));
+        } else if (mode == 2) {
+            // Mode 2: rote Kreise (dodge), grüne Rechtecke (catch)
+            int objType = std::rand() % 2; // 0 = Kreis, 1 = Rechteck
+
+            if (objType == 0) {
+                // roter Kreis
+                cv::Scalar red = cv::Scalar(0, 0, 255);
+                objects.push_back(std::make_shared<Circle>(red, Size{ size, size }, Speed{ speed }, pos));
+            } else {
+                // grünes Rechteck
+                cv::Scalar green = cv::Scalar(0, 255, 0);
+                objects.push_back(std::make_shared<Square>(green, Size{ size, size }, Speed{ speed }, pos));
+            }
+        }
     }
 }
+
 
 void Game::updateObjects(cv::Mat& frame, const std::vector<cv::Rect>& faces) {
     spawnObjects();
@@ -83,6 +105,8 @@ void Game::updateObjects(cv::Mat& frame, const std::vector<cv::Rect>& faces) {
 //
 
 void Game::run() {
+    std::cout << "Select mode (1 = Dodge the balls, 2 = Catch the squares): ";
+    std::cin >> mode;
     if (!initialize()) return;
 
     cv::Mat frame;

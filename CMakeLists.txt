@@ -16,6 +16,7 @@ add_executable(FaceDetectionStarter
     src/Game.cpp
     #src/GameObject.cpp
     src/Circle.cpp
+    src/Square.cpp
 )
 
 # Include inc directories
