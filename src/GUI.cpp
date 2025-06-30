@@ -48,7 +48,7 @@ void GUI::printPlayerInfo(const Player& player) const {
 }
 
 // Asks the player for the game mode
-int GUI::askGameMode() const {
+GameMode GUI::askGameMode() const {
     int mode = 0;
     std::cout << "Select Game Mode:\n";
     std::cout << "1. Dodge Balls\n";
@@ -66,13 +66,13 @@ int GUI::askGameMode() const {
         } 
         else {
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // flush remaining
-            return mode;
+            return static_cast<GameMode>(mode); // TODO: static_cast erklären
         } 
     }
 }
 
-// TO DO: Show window from FaceDetector
-void GUI::displayGameWindow(FaceDetector& detector) {
+// Ab jetzt in game
+/*void GUI::displayGameWindow(FaceDetector& detector) {
     const std::string windowName = "Face Detection";
     cv::namedWindow(windowName, cv::WINDOW_AUTOSIZE);
 
@@ -94,8 +94,8 @@ void GUI::displayGameWindow(FaceDetector& detector) {
     }
     }
 
-    cv::destroyWindow(windowName);
-}
+    cv::destroyWindow(windowName); 
+} */
 
 // Shows Game Over screen
 void GUI::displayGameOver() const {

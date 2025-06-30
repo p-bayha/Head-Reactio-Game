@@ -5,6 +5,7 @@
 #include <iostream>
 #include "Player.hpp"
 #include "FaceDetector.hpp"
+#include "Game.hpp"
 
 /*
  * @brief Handles all user interface interactions
@@ -29,11 +30,11 @@ public:
 
     /// @brief Let's the player choose the game mode.
     /// @return Chosen game mode (1 or 2)
-    int askGameMode() const;
+    GameMode askGameMode() const;
 
     /// @brief Shows game window including objects (in the future) and score
     /// @param detector FaceDetector instance passed by reference.
-    void displayGameWindow(FaceDetector& detector);
+    // void displayGameWindow(FaceDetector& detector); noch entfernen, jetzt in Game
 
     // Shows a terminal "Game Over" screen ("Game Over" + ESC can be added as text later)
     void displayGameOver() const;

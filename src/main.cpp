@@ -1,13 +1,21 @@
 #include "FaceDetector.hpp"
 #include "Player.hpp"
 #include "GUI.hpp"
+#include "Game.hpp"
 #include <string>
 
 int main() {
-    GUI gui; // Interface handler
-    Player player; // Game player instance
+    // Path to the Haar cascade XML file for face detection
+    const std::string cascadeFilePath = "haarcascade_frontalface_default.xml";
+    
+    Game game(cascadeFilePath);
+    game.startGame();
 
-    // Show menu and input player name
+//    GUI gui; // Interface handler
+//    Player player; // Game player instance
+
+/* ab jetzt in Game
+   // Show menu and input player name
     gui.displayMenu();
     player.setName(gui.inputName());
 
@@ -16,9 +24,6 @@ int main() {
 
     // Show player information
     gui.printPlayerInfo(player);
-
-    // Path to the Haar cascade XML file for face detection
-    const std::string cascadeFilePath = "haarcascade_frontalface_default.xml";
 
     // Create FaceDetector instance for face detection
     FaceDetector faceDetector(cascadeFilePath);
@@ -31,7 +36,7 @@ int main() {
     if (!faceDetector.isInitialized()) {
         std::cerr << "Detector not ready." << std::endl;
         return 1;
-    }
+    } 
 
     // Start game
     std::cout << "\nStarting game in mode " << gameMode << "...\n" << std::endl;
@@ -41,7 +46,7 @@ int main() {
 
     // End game
     gui.displayGameOver();
-    gui.displayFinalScore(player);
+    gui.displayFinalScore(player); */
 
     return 0;
 }
