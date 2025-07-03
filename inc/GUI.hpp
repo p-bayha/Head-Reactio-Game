@@ -5,7 +5,8 @@
 #include <iostream>
 #include "Player.hpp"
 #include "FaceDetector.hpp"
-#include "Game.hpp"
+#include "GameMode.hpp"
+#include "GUI.hpp"
 
 /*
  * @brief Handles all user interface interactions
@@ -21,26 +22,27 @@ public:
     // Displays the welcome menu in the terminal.
     void displayMenu() const;
 
-    /// @brief Prompts the user to input their name via terminal.
-    /// @return name
-    std::string inputName();
+    //NEW: shows menu on the screen
+    void showMainMenuWindow(std::string& playerName, GameMode& selectedMode);
+
+    // Helperfunction for entering correct name that returns empty string if valid, else returns error message
+    std::string validateName(const std::string& name) const;
+
+    // Shows score while playing, add later maybe
+    //void GUI::drawHUD(cv::Mat& frame, const Player& player)
 
     // Prints the player's name and score to the terminal.
     void printPlayerInfo(const Player& player) const;
-
-    /// @brief Let's the player choose the game mode.
-    /// @return Chosen game mode (1 or 2)
-    GameMode askGameMode() const;
-
-    /// @brief Shows game window including objects (in the future) and score
-    /// @param detector FaceDetector instance passed by reference.
-    // void displayGameWindow(FaceDetector& detector); noch entfernen, jetzt in Game
 
     // Shows a terminal "Game Over" screen ("Game Over" + ESC can be added as text later)
     void displayGameOver() const;
 
     // Shows final score and player name
     void displayFinalScore(const Player& player);
+
+private:
+    int m_menuframeWidth;
+    int m_menuframeHeight;
 };
 
 #endif // GUI_HPP

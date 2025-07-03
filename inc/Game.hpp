@@ -5,13 +5,9 @@
 #include <iostream>
 #include "Player.hpp"
 #include "FaceDetector.hpp"
+#include "GameMode.hpp"
 #include "GUI.hpp"
 
-// Nachher in game mode
-enum class GameMode {
-    DodgeBalls = 1,
-    CatchSquares = 2
-};
 
 /*
  * @brief Main controller class. 
@@ -44,9 +40,10 @@ private:
     Player m_player;
     FaceDetector m_faceDetector;
     GUI m_gui;
-    int m_gameMode; // wenn Game Mode implitiert ist, current game mode (1 or 2)
+    GameMode m_gameMode; // wenn Game Mode implitiert ist, current game mode (1 or 2)
     bool m_gameRunning; // Controls game loop
 
+    std::string getModeString() const;
 };
 
 #endif // GAME_HPP

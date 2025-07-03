@@ -11,42 +11,8 @@ int main() {
     Game game(cascadeFilePath);
     game.startGame();
 
-//    GUI gui; // Interface handler
-//    Player player; // Game player instance
-
-/* ab jetzt in Game
-   // Show menu and input player name
-    gui.displayMenu();
-    player.setName(gui.inputName());
-
-    // Choose game mode (future: part of game mode class maybe)
-    int gameMode = gui.askGameMode();
-
-    // Show player information
-    gui.printPlayerInfo(player);
-
-    // Create FaceDetector instance for face detection
-    FaceDetector faceDetector(cascadeFilePath);
-
-    if (!faceDetector.initialize()) {
-        std::cerr << "Initialization failed!" << std::endl;
-        return 1; 
-    }
-
-    if (!faceDetector.isInitialized()) {
-        std::cerr << "Detector not ready." << std::endl;
-        return 1;
-    } 
-
-    // Start game
-    std::cout << "\nStarting game in mode " << gameMode << "...\n" << std::endl;
-
-    // Display camera/game window
-    gui.displayGameWindow(faceDetector);
-
-    // End game
-    gui.displayGameOver();
-    gui.displayFinalScore(player); */
+    //GUI gui; // Interface handler
+    //Player player; // Game player instance
 
     return 0;
 }
