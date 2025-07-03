@@ -49,25 +49,25 @@ void Game::run() {
     std::cin >> name;
     player.setName(name);
 
-    std::cout << "Select mode (1 = Dodge the balls, 2 = Catch the squares): ";
-    std::cin >> mode;
+    while (mode != 1 && mode != 2) {
+        std::cout << "Select mode (1 = Dodge the balls, 2 = Catch the squares): ";
+        std::cin >> mode;
+        if (mode != 1 && mode != 2) {
+            std::cout << "Invalid mode, please enter 1 or 2." << std::endl;
+        }
+    }
 
     if (!initialize()) return;
 
     std::unique_ptr<GameMode> gameMode;
 
     if (mode == 1) {
-        // Dodge Balls Mode: läuft unendlich, bis man getroffen wird
         gameMode = std::make_unique<DodgeBallsMode>(player, frameWidth, frameHeight);
     } else if (mode == 2) {
-        // Catch Squares Mode: spielt N Objekte
         int n;
         std::cout << "Enter number of objects (N): ";
         std::cin >> n;
         gameMode = std::make_unique<CatchSquaresMode>(player, frameWidth, frameHeight, n);
-    } else {
-        std::cerr << "Invalid mode." << std::endl;
-        return;
     }
 
     gameMode->initialize();
@@ -86,7 +86,7 @@ void Game::run() {
         }
 
         if (!gameMode->update(frame, faces)) {
-            break; // Game over oder fertig
+            break;
         }
 
         cv::imshow(windowName, frame);
@@ -97,3 +97,4 @@ void Game::run() {
     std::cout << "Game Over, " << player.getName()
               << "! Your score: " << player.getScore() << std::endl;
 }
+

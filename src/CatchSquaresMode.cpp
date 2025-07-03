@@ -58,8 +58,8 @@ bool CatchSquaresMode::update(cv::Mat& frame, const std::vector<cv::Rect>& faces
     // Anzeige oben
     cv::putText(frame, "Catch the Squares!", cv::Point(10,30),
                 cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255,255,255), 2);
-    cv::putText(frame, "Score: " + std::to_string(m_player.getScore()), 
-                cv::Point(10,70), cv::FONT_HERSHEY_SIMPLEX, 1, 
+    cv::putText(frame, "Score: " + std::to_string(m_player.getScore()),
+                cv::Point(10,70), cv::FONT_HERSHEY_SIMPLEX, 1,
                 cv::Scalar(255,255,255), 2);
 
     // Ende nur wenn N erreicht und alle Objekte weg

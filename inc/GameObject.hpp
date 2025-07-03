@@ -19,6 +19,7 @@ public:
     virtual bool checkCollision(const cv::Rect& face) = 0;
 
     Position getPosition() const { return m_position; }
+    Size getSize() const { return m_size; } // <-- NEU
 
 protected:
     cv::Scalar m_color;
