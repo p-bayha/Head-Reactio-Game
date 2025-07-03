@@ -11,7 +11,7 @@ std::string Player::getName() const {
     return m_name;
 }
 
-//Change the player's score
+//Change the player's score 
 void Player::changeScore(int delta) {
     m_score += delta;
     if (m_score < 0) {
@@ -31,4 +31,3 @@ void Player::setScore(int score) {
 int Player::getScore() const {
     return m_score;
 }
-

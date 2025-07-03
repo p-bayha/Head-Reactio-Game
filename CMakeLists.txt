@@ -14,11 +14,12 @@ find_package(OpenCV REQUIRED)
 add_executable(FaceDetectionStarter
     src/main.cpp
     src/Game.cpp
-    #src/GameObject.cpp
+    src/Player.cpp
     src/Circle.cpp
     src/Square.cpp
+    src/DodgeBallsMode.cpp
+    src/CatchSquaresMode.cpp
 )
-
 # Include inc directories
 target_include_directories(FaceDetectionStarter PRIVATE ${CMAKE_SOURCE_DIR}/inc)
 
