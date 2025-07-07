@@ -16,9 +16,6 @@ public:
     // Default destructor
     ~Player() = default;
 
-    // Prompts the user to input their name via terminal.
-    void inputName();
-
     /// @brief Sets the player's name
     /// @param name The new name for the player.
     void setName(const std::string& name);
@@ -27,19 +24,16 @@ public:
     std::string getName() const;
 
     ///@brief Changes the player's score.
-    ///@param delta Score change (can be negative).
+    ///@param delta Amount to add/subtract from the score (can be negative).
     void changeScore(int delta);
 
-    /// @brief Sets the player's score directly.
+    /// @brief Sets the player's score.
     //         Score will be reduced to zero if a negative value is passed.
     /// @param score The new score value.
     void setScore(int score);
 
-    // Gets the player's score.
-    int getScore() const;
-
-    // Prints the player's name and score to the terminal.
-    void printPlayerInfo() const;
+    // Gets the current player's score.
+    int getScore() const; //TO DO evtl. in GUI
 
 private:
     std::string m_name {}; // Default initialized empty string

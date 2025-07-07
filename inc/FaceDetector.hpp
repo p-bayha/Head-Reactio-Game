@@ -15,9 +15,13 @@ public:
 
     // Initialises the camera, window and checks resources
     bool initialize();
+    bool isInitialized() const;
 
-    // Main loop: Capture and process frames
-    void detectFace();
+    /**
+     * @brief Captures and processes one frame, draws rectangles on detected faces.
+     * @return Processed frame with face rectangles drawn.
+     */
+    cv::Mat getProcessedFrame();
 
 private:
     // Releases camera and destroys OpenCV windows
@@ -29,6 +33,8 @@ private:
 
     int m_frameWidth; // Width of the camera frame
     int m_frameHeight; // Height of the camera frame
+
+    bool m_initialized;
 };
 
 #endif // FACEDETECTOR_HPP
