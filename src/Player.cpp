@@ -31,3 +31,4 @@ void Player::setScore(int score) {
 int Player::getScore() const {
     return m_score;
 }
+

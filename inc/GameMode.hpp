@@ -15,4 +15,5 @@ public:
     virtual int getScore() const = 0;
 };
 
-#endif
+#endif //GAMEMODE_HPP
+
