@@ -16,7 +16,7 @@ void GUI::displayMenu() const {
     cv::putText(frame, info, cv::Point(20, 30), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(255, 255, 255), 2);
 } */ // Shows score while playing, add later maybe
 
-void GUI::showMainMenuWindow(std::string& playerName, GameMode& selectedMode) {
+void GUI::showMainMenuWindow(std::string& playerName, GameModeType& selectedMode, int& n_objects) {
     const std::string windowName = "Main Menu";
     cv::namedWindow(windowName, cv::WINDOW_AUTOSIZE);
 
@@ -25,11 +25,12 @@ void GUI::showMainMenuWindow(std::string& playerName, GameMode& selectedMode) {
 
     cv::Mat menu(m_menuframeHeight, m_menuframeWidth, CV_8UC3); // Canvas for menu
 
-    std::string nameInput, errorMsg = "";
+    std::string nameInput, objectCountInput = "", errorMsg = "";
     int selectedIndex = 0;
     std::vector<std::string> gameModes = {"Dodge Balls", "Catch Squares"};
 
     bool typingName = true;
+    bool typingObjects = false;
     bool confirmed = false;
     bool showCursor = true;
     int frameCount = 0;
@@ -40,7 +41,6 @@ void GUI::showMainMenuWindow(std::string& playerName, GameMode& selectedMode) {
     struct MouseState {
         int x = -1, y = -1;
         bool clicked = false;
-        bool doubleClicked = false;
     } mouse;
 
     cv::setMouseCallback(windowName, [](int event, int x, int y, int, void*userdata) {
@@ -88,6 +88,10 @@ void GUI::showMainMenuWindow(std::string& playerName, GameMode& selectedMode) {
             cv::putText(menu, gameModes[i], textPos, cv::FONT_HERSHEY_COMPLEX, 0.8, color, 2);
         }
 
+        // Object count field
+        if (!typingName && selectedIndex == 1) {
+            cv::putText(menu, "Number of objects: " + objectCountInput + (typingObjects ? cursor : ""), cv::Point(100, 390), cv::FONT_HERSHEY_COMPLEX, 0.8, cv::Scalar(255,255,180), 2);
+        }
         // Instructions on the screen
         if (!typingName) {
             cv::putText(menu, "Press Enter to start", cv::Point(100, 400), cv::FONT_HERSHEY_COMPLEX, 0.6, cv::Scalar(255,255,255), 1);
@@ -129,6 +133,25 @@ void GUI::showMainMenuWindow(std::string& playerName, GameMode& selectedMode) {
                 }
             }
         }
+        // object count input
+        /*else if (typingObjects) {
+            if (key == 13 || key == 10) {
+                try {
+                    n_objects = std::stoi(objectCountInput);
+                    if (n_objects <= 0) throw std::invalid_argument("must be positive");
+                    typingObjects = false;
+                } catch (...) {
+                    errorMsg = "Enter a positive number.";
+                    objectCountInput.clear();
+                }
+            }
+            else if (key == 8 || key == 127) {
+                if (!objectCountInput.empty()) objectCountInput.pop_back();
+            }
+            else if (key >= '0' && key <= '9' && objectCountInput.size() < 3) {
+                objectCountInput += static_cast<char>(key);
+            }
+        }  */           
         // Select game mode
         else {
             // Navigating game mode
@@ -139,12 +162,33 @@ void GUI::showMainMenuWindow(std::string& playerName, GameMode& selectedMode) {
                 selectedIndex = (selectedIndex + 1) % gameModes.size();             
             }
             else if (key == 13 || key == 10) { // enter to confirm
-                // Visual feedback
-                menu.setTo(cv::Scalar(0, 255, 0)); 
-                cv::putText(menu, "Starting...", cv::Point(200, 240), cv::FONT_HERSHEY_COMPLEX, 1, cv::Scalar(0, 0, 0), 2);
-                cv::imshow(windowName, menu);
-                cv::waitKey(250); // pause before opening main window
-                confirmed = true;
+                /*if (selectedIndex == 1 && !typingObjects) {
+                    typingObjects = true;
+                    errorMsg.clear();
+                    objectCountInput.clear();
+                }
+                else if (selectedIndex == 1 && typingObjects && !objectCountInput.empty()) {
+                    try {
+                        n_objects = std::stoi(objectCountInput);
+                        if (n_objects <= 0) throw std::invalid_argument("must be positive");
+                            menu.setTo(cv::Scalar(0, 255, 0)); 
+                            cv::putText(menu, "Starting...", cv::Point(200, 240), cv::FONT_HERSHEY_COMPLEX, 1, cv::Scalar(0, 0, 0), 2);
+                            cv::imshow(windowName, menu);
+                            cv::waitKey(250); // pause before opening main window
+                            confirmed = true;
+                        } catch (...) {
+                            errorMsg = "Enter a positive number.";
+                            objectCountInput.clear();
+                        }
+                }
+                else if (selectedIndex == 0) { */
+                    // Visual feedback
+                    menu.setTo(cv::Scalar(0, 255, 0)); 
+                    cv::putText(menu, "Starting...", cv::Point(200, 240), cv::FONT_HERSHEY_COMPLEX, 1, cv::Scalar(0, 0, 0), 2);
+                    cv::imshow(windowName, menu);
+                    cv::waitKey(250); // pause before opening main window
+                    confirmed = true;
+                //}
             }
             // Reset mouse state
             mouse.clicked = false;
@@ -160,7 +204,7 @@ void GUI::showMainMenuWindow(std::string& playerName, GameMode& selectedMode) {
 
     cv::destroyWindow(windowName);
     playerName = nameInput;
-    selectedMode = (selectedIndex == 0) ? GameMode::DodgeBalls : GameMode::CatchSquares;
+    selectedMode = (selectedIndex == 0) ? GameModeType::DodgeBalls : GameModeType::CatchSquares;
 
 }
 
@@ -181,10 +225,29 @@ std::string GUI::validateName(const std::string& name) const {
     return ""; // the entered name is valid
 }
 
+std::string GUI::getModeString(GameModeType mode) const {
+    // Auch Teil der Game mode klasse, nachher evtl. anders umgesetzt
+    std::string modeString;
+    switch (mode) {
+        case GameModeType::DodgeBalls: 
+            modeString = "Dodge Balls";
+            break;
+        case GameModeType::CatchSquares: 
+            modeString = "Catch Squares";
+            break;
+        // evtl. nachher noch weitere modes
+        default: 
+            modeString = "Unknown";
+            break;
+
+    }
+    return modeString;
+}
 
 // Print the player's name and score
-void GUI::printPlayerInfo(const Player& player) const {
+void GUI::printPlayerInfo(const Player& player, GameModeType mode) const {
     std::cout << "Player: " << player.getName() << " | Score: " << player.getScore() << std::endl; // Inhalt evtl. noch überarbeiten
+    std::cout << "\nStarting game in mode " << getModeString(mode) << "...\n" << std::endl;
 }
 
 // Shows Game Over screen

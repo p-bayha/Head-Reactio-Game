@@ -1,11 +1,13 @@
 #include "CatchSquaresMode.hpp"
 #include "Player.hpp"
+#include "FaceDetector.hpp"
 #include <cstdlib>
 #include <opencv2/opencv.hpp>
 
-CatchSquaresMode::CatchSquaresMode(Player& player, int frameWidth, int frameHeight, int totalObjects)
-    : m_player(player), m_frameWidth(frameWidth), m_frameHeight(frameHeight),
-      m_spawnTimer(0), m_remainingObjects(totalObjects) {}
+CatchSquaresMode::CatchSquaresMode(Player& player, int m_frameHight, int m_frameWidth, int totalObjects)
+    : m_player(player), m_frameWidth(m_frameHight), m_frameHeight(m_frameHight),
+      m_spawnTimer(0), m_remainingObjects(totalObjects) {
+      }
 
 void CatchSquaresMode::initialize() {
     m_player.setScore(0);

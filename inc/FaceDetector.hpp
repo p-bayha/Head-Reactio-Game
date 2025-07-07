@@ -22,6 +22,7 @@ public:
      * @return Processed frame with face rectangles drawn.
      */
     cv::Mat getProcessedFrame();
+    std::vector<cv::Rect> detectFaces(const cv::Mat& frame);
 
 private:
     // Releases camera and destroys OpenCV windows

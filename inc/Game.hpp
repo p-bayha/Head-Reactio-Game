@@ -2,14 +2,11 @@
 #define GAME_HPP
 
 #include <string>
-
-#include <iostream>
+#include <memory> 
 #include "Player.hpp"
 #include "FaceDetector.hpp"
 #include "GameMode.hpp"
 #include "GUI.hpp"
-#include <vector> //
-#include <memory> //
 
 #include "Circle.hpp" //
 #include "Square.hpp" //
@@ -45,24 +42,27 @@ private:
 
     // int updateScore(int points); maybe later or GUI/Player
 
-
     Player m_player;
     FaceDetector m_faceDetector;
     GUI m_gui;
-    GameMode m_gameMode; // wenn Game Mode implitiert ist, current game mode (1 or 2)
+    GameModeType m_gameMode; // wenn Game Mode implitiert ist, current game mode (1 or 2)
+    std::unique_ptr<GameMode> m_gameModePtr; 
+
     bool m_gameRunning; // Controls game loop
 
-    std::string getModeString() const;
+
     void spawnObjects(); //
     void updateObjects(cv::Mat& frame, const std::vector<cv::Rect>& faces); //
 
-    cv::VideoCapture cap;
+    // evtl. löschen da schon in GUI und FaceDetector
+    /*cv::VideoCapture cap;
     cv::CascadeClassifier faceCascade;
-    const std::string windowName = "Face Detection";
+    const std::string windowName = "Face Detection";*/
 
     std::vector<std::shared_ptr<GameObject>> objects; //
-    int frameWidth;
-    int frameHeight;
+   /* int frameWidth;
+    int frameHeight; */
+
     int spawnTimer = 0; //
     int mode = 1; //- // Default Mode 1, kannst per Konsole setzen
 };

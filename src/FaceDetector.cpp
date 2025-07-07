@@ -76,3 +76,9 @@ void FaceDetector::releaseResources() {
     cv::destroyAllWindows();
     m_initialized = false; // Reset initialisation status
 }
+
+std::vector<cv::Rect> FaceDetector::detectFaces(const cv::Mat& frame) {
+    std::vector <cv::Rect> faces;
+    faceCascade.detectMultiScale(frame, faces, 1.1, 3, 0, cv::Size(60, 60));
+    return faces;
+}
