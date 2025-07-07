@@ -1,11 +1,19 @@
 #ifndef GAMEMODE_HPP
 #define GAMEMODE_HPP
 
-// Nachher in game mode
-enum class GameMode {
-    None = 0,
-    DodgeBalls = 1,
-    CatchSquares = 2
+#include <opencv2/opencv.hpp>
+#include "Player.hpp"
+#include "GameObject.hpp"
+#include <vector>
+#include <memory>
+
+class GameMode {
+public:
+    virtual ~GameMode() {}
+    virtual void initialize() = 0;
+    virtual bool update(cv::Mat& frame, const std::vector<cv::Rect>& faces) = 0;
+    virtual int getScore() const = 0;
 };
 
 #endif //GAMEMODE_HPP
+

@@ -2,11 +2,20 @@
 #define GAME_HPP
 
 #include <string>
+
 #include <iostream>
 #include "Player.hpp"
 #include "FaceDetector.hpp"
 #include "GameMode.hpp"
 #include "GUI.hpp"
+#include <vector> //
+#include <memory> //
+
+#include "Circle.hpp" //
+#include "Square.hpp" //
+#include "GameObject.hpp" //
+#include "Utils.hpp" //
+
 
 
 /*
@@ -44,6 +53,19 @@ private:
     bool m_gameRunning; // Controls game loop
 
     std::string getModeString() const;
+    void spawnObjects(); //
+    void updateObjects(cv::Mat& frame, const std::vector<cv::Rect>& faces); //
+
+    cv::VideoCapture cap;
+    cv::CascadeClassifier faceCascade;
+    const std::string windowName = "Face Detection";
+
+    std::vector<std::shared_ptr<GameObject>> objects; //
+    int frameWidth;
+    int frameHeight;
+    int spawnTimer = 0; //
+    int mode = 1; //- // Default Mode 1, kannst per Konsole setzen
 };
 
 #endif // GAME_HPP
+

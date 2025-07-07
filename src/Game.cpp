@@ -1,9 +1,19 @@
 #include "Game.hpp"
+#include "Player.hpp"
+#include "DodgeBallsMode.hpp"
+#include "CatchSquaresMode.hpp"
+#include <cstdlib>
+#include <ctime>
 #include <iostream>
 #include "FaceDetector.hpp"
+#include <memory>
 
 // Constructor
-Game::Game(const std::string& cascadePath) : m_faceDetector(cascadePath), m_gameMode(GameMode::None), m_gameRunning(false) {}
+Game::Game(const std::string& cascadePath) : m_faceDetector(cascadePath), m_gameMode(GameMode::None), m_gameRunning(false), frameWidth(0), frameHeight(0) {
+    faceCascade.load(cascadePath);
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+    }
+
 
 // Starts game
 void Game::startGame()
@@ -28,6 +38,9 @@ void Game::startGame()
         return;
     }
 
+      if (faceCascade.empty()) {
+        std::cerr << "Error: Could not load Haar cascade file." << std::endl;
+        return false;
     std::cout << "\nStarting game in mode " << getModeString() << "...\n" << std::endl;
     m_gameRunning = true;
 
@@ -49,6 +62,7 @@ std::string Game::getModeString() const {
         default: 
             modeString = "Unknown";
             break;
+
     }
     return modeString;
 }
@@ -72,6 +86,44 @@ void Game::gameLoop() {
     const std::string windowName = "Game Window";
     cv::namedWindow(windowName, cv::WINDOW_AUTOSIZE);
 
+      while (mode != 1 && mode != 2) {
+        std::cout << "Select mode (1 = Dodge the balls, 2 = Catch the squares): ";
+        std::cin >> mode;
+        if (mode != 1 && mode != 2) {
+            std::cout << "Invalid mode, please enter 1 or 2." << std::endl;
+        }
+    }
+      if (!initialize()) return;
+
+    std::unique_ptr<GameMode> gameMode;
+
+    if (mode == 1) {
+        gameMode = std::make_unique<DodgeBallsMode>(player, frameWidth, frameHeight);
+    } else if (mode == 2) {
+        int n;
+        std::cout << "Enter number of objects (N): ";
+        std::cin >> n;
+        gameMode = std::make_unique<CatchSquaresMode>(player, frameWidth, frameHeight, n);
+    }
+
+    gameMode->initialize();
+
+    cv::Mat frame;
+    while (true) {
+        cap >> frame;
+        if (frame.empty()) break;
+        cv::flip(frame, frame, 1);
+
+        std::vector<cv::Rect> faces;
+        faceCascade.detectMultiScale(frame, faces, 1.1, 3, 0, cv::Size(60, 60));
+
+        for (const auto& face : faces) {
+            cv::rectangle(frame, face, cv::Scalar(0, 255, 0), 2);
+        }
+
+        if (!gameMode->update(frame, faces)) {
+            break;
+        }
     while(m_gameRunning) {
         cv::Mat frame = m_faceDetector.getProcessedFrame();
 
@@ -87,10 +139,12 @@ void Game::gameLoop() {
         //m_gui.drawHUD(frame, m_player, m_gameMode);
 
         // Display the frame
+
         cv::imshow(windowName, frame);
 
         // Exit loop if ESC key (ASCII 27) is pressed 
         int key = cv::waitKey(10);
+
         if (key == 27) {
             m_gameRunning = false; 
         }
@@ -104,3 +158,4 @@ void Game::endGame() {
     m_gui.displayGameOver();
     m_gui.displayFinalScore(m_player);
 }
+

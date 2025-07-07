@@ -8,6 +8,7 @@ int main() {
     // Path to the Haar cascade XML file for face detection
     const std::string cascadeFilePath = "haarcascade_frontalface_default.xml";
     
+
     Game game(cascadeFilePath);
     game.startGame();
 
