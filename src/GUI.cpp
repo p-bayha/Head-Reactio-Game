@@ -33,7 +33,7 @@ void GUI::showMainMenuWindow(std::string& playerName, GameModeType& selectedMode
     bool typingObjects = false;
     bool confirmed = false;
     bool showCursor = true;
-    int frameCount = 0;
+    int frameCount = 0, prevSelectedIndex = selectedIndex;
 
     std::vector<cv::Rect> modeButtons;
 
@@ -90,7 +90,7 @@ void GUI::showMainMenuWindow(std::string& playerName, GameModeType& selectedMode
 
         // Object count field
         if (!typingName && selectedIndex == 1) {
-            cv::putText(menu, "Number of objects: " + objectCountInput + (typingObjects ? cursor : ""), cv::Point(100, 390), cv::FONT_HERSHEY_COMPLEX, 0.8, cv::Scalar(255,255,180), 2);
+            cv::putText(menu, "Number of objects: " + objectCountInput + (typingObjects ? cursor : ""), cv::Point(320, 280), cv::FONT_HERSHEY_COMPLEX, 0.8, cv::Scalar(255,255,180), 2);
         }
         // Instructions on the screen
         if (!typingName) {
@@ -134,12 +134,14 @@ void GUI::showMainMenuWindow(std::string& playerName, GameModeType& selectedMode
             }
         }
         // object count input
-        /*else if (typingObjects) {
+        else if (typingObjects) {
             if (key == 13 || key == 10) {
                 try {
                     n_objects = std::stoi(objectCountInput);
                     if (n_objects <= 0) throw std::invalid_argument("must be positive");
-                    typingObjects = false;
+                    confirmed = true;
+                    std::cout << "Confirmation triggered!" << std::endl;
+                    //typingObjects = false;
                 } catch (...) {
                     errorMsg = "Enter a positive number.";
                     objectCountInput.clear();
@@ -151,9 +153,11 @@ void GUI::showMainMenuWindow(std::string& playerName, GameModeType& selectedMode
             else if (key >= '0' && key <= '9' && objectCountInput.size() < 3) {
                 objectCountInput += static_cast<char>(key);
             }
-        }  */           
+        } 
+                    
         // Select game mode
         else {
+            prevSelectedIndex = selectedIndex;
             // Navigating game mode
             if (key == 'w') { // up
                 selectedIndex = (selectedIndex - 1 + gameModes.size()) % gameModes.size();
@@ -162,34 +166,29 @@ void GUI::showMainMenuWindow(std::string& playerName, GameModeType& selectedMode
                 selectedIndex = (selectedIndex + 1) % gameModes.size();             
             }
             else if (key == 13 || key == 10) { // enter to confirm
-                /*if (selectedIndex == 1 && !typingObjects) {
-                    typingObjects = true;
-                    errorMsg.clear();
-                    objectCountInput.clear();
-                }
-                else if (selectedIndex == 1 && typingObjects && !objectCountInput.empty()) {
-                    try {
-                        n_objects = std::stoi(objectCountInput);
-                        if (n_objects <= 0) throw std::invalid_argument("must be positive");
-                            menu.setTo(cv::Scalar(0, 255, 0)); 
-                            cv::putText(menu, "Starting...", cv::Point(200, 240), cv::FONT_HERSHEY_COMPLEX, 1, cv::Scalar(0, 0, 0), 2);
-                            cv::imshow(windowName, menu);
-                            cv::waitKey(250); // pause before opening main window
-                            confirmed = true;
-                        } catch (...) {
-                            errorMsg = "Enter a positive number.";
-                            objectCountInput.clear();
-                        }
-                }
-                else if (selectedIndex == 0) { */
-                    // Visual feedback
-                    menu.setTo(cv::Scalar(0, 255, 0)); 
-                    cv::putText(menu, "Starting...", cv::Point(200, 240), cv::FONT_HERSHEY_COMPLEX, 1, cv::Scalar(0, 0, 0), 2);
-                    cv::imshow(windowName, menu);
-                    cv::waitKey(250); // pause before opening main window
+                if (selectedIndex == 0) {
                     confirmed = true;
-                //}
+                }
             }
+                    else if (key == 13 || key == 10) { // ENTER
+                        if (selectedIndex == 1) {
+                            typingObjects = true;
+                            objectCountInput.clear();
+                            errorMsg.clear();
+                        } else {
+                            confirmed = true;
+                        }
+                    }
+
+            if (confirmed) {
+                std::cout << "Confirmation triggered!" << std::endl;
+                // Visual feedback
+                menu.setTo(cv::Scalar(0, 255, 0)); 
+                cv::putText(menu, "Starting...", cv::Point(200, 240), cv::FONT_HERSHEY_COMPLEX, 1, cv::Scalar(0, 0, 0), 2);
+                cv::imshow(windowName, menu);
+                cv::waitKey(250); // pause before opening main window
+            }
+
             // Reset mouse state
             mouse.clicked = false;
         }
@@ -263,7 +262,6 @@ void GUI::displayFinalScore(const Player& player) {
     std::cout << "\n-----------------------------------" << std::endl;
     std::cout << "             Final Results" << std::endl;
     std::cout << "-----------------------------------" << std::endl;
-    std::cout << " Player: " << player.getName() << std::endl;
-    std::cout << " Score:  " << player.getScore() << std::endl;
+    std::cout << "Player: " << player.getName() << " | Score: " << player.getScore() << std::endl;
     std::cout << "-----------------------------------" << std::endl;
 }
