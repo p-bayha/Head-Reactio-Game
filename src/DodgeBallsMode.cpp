@@ -1,10 +1,11 @@
 #include "DodgeBallsMode.hpp"
 #include "Player.hpp"
+#include "FaceDetector.hpp"
 #include <cstdlib>
 #include <opencv2/opencv.hpp>
 
-DodgeBallsMode::DodgeBallsMode(Player& player, int frameWidth, int frameHeight)
-    : m_player(player), m_frameWidth(frameWidth), m_frameHeight(frameHeight), m_spawnTimer(0) {}
+DodgeBallsMode::DodgeBallsMode(Player& player, int m_frameWidth, int m_frameHight)
+    : m_player(player), m_frameWidth(m_frameWidth), m_frameHeight(m_frameHight), m_spawnTimer(0) {}
 
 void DodgeBallsMode::initialize() {
     m_player.setScore(0);

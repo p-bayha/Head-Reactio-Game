@@ -23,7 +23,7 @@ public:
     void displayMenu() const;
 
     //NEW: shows menu on the screen
-    void showMainMenuWindow(std::string& playerName, GameMode& selectedMode);
+    void showMainMenuWindow(std::string& playerName, GameModeType& selectedMode, int& n_objects);
 
     // Helperfunction for entering correct name that returns empty string if valid, else returns error message
     std::string validateName(const std::string& name) const;
@@ -31,8 +31,11 @@ public:
     // Shows score while playing, add later maybe
     //void GUI::drawHUD(cv::Mat& frame, const Player& player)
 
+    // Returns current mode as string
+    std::string getModeString(GameModeType mode) const;
+
     // Prints the player's name and score to the terminal.
-    void printPlayerInfo(const Player& player) const;
+    void printPlayerInfo(const Player& player, GameModeType mode) const;
 
     // Shows a terminal "Game Over" screen ("Game Over" + ESC can be added as text later)
     void displayGameOver() const;
@@ -43,6 +46,7 @@ public:
 private:
     int m_menuframeWidth;
     int m_menuframeHeight;
+    GameModeType m_gameMode; 
 };
 
 #endif // GUI_HPP
