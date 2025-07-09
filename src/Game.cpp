@@ -54,16 +54,13 @@ void Game::setupPlayer() {
     //std::unique_ptr<GameMode> m_gameModePtr;
     
     if (mode == GameModeType::CatchSquares) {
-        int n;
-        std::cout << "Enter number of objects (N): ";
-        std::cin >> n; 
-        m_gameModePtr = std::make_unique<CatchSquaresMode>(m_player, 640, 480, n);
+        m_gameModePtr = std::make_unique<CatchSquaresMode>(m_player, 640, 480, n_objects);
     } else if (mode == GameModeType::DodgeBalls) {
         m_gameModePtr = std::make_unique<DodgeBallsMode>(m_player, 640, 480);
     }
 
     // Show player information
-    m_gui.printPlayerInfo(m_player, m_gameMode);
+    m_gui.printPlayerInfo(m_player, m_gameMode, n_objects);
 }
 
 // Main game loop 

@@ -35,7 +35,7 @@ public:
     std::string getModeString(GameModeType mode) const;
 
     // Prints the player's name and score to the terminal.
-    void printPlayerInfo(const Player& player, GameModeType mode) const;
+    void printPlayerInfo(const Player& player, GameModeType mode, int n_objects) const;
 
     // Shows a terminal "Game Over" screen ("Game Over" + ESC can be added as text later)
     void displayGameOver() const;

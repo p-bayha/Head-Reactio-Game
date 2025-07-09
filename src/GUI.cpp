@@ -30,7 +30,7 @@ void GUI::showMainMenuWindow(std::string& playerName, GameModeType& selectedMode
     std::vector<std::string> gameModes = {"Dodge Balls", "Catch Squares"};
 
     bool typingName = true;
-    bool typingObjects = false;
+    bool focusOnObjectCount = false;
     bool confirmed = false;
     bool showCursor = true;
     int frameCount = 0, prevSelectedIndex = selectedIndex;
@@ -90,13 +90,13 @@ void GUI::showMainMenuWindow(std::string& playerName, GameModeType& selectedMode
 
         // Object count field
         if (!typingName && selectedIndex == 1) {
-            cv::putText(menu, "Number of objects: " + objectCountInput + (typingObjects ? cursor : ""), cv::Point(320, 280), cv::FONT_HERSHEY_COMPLEX, 0.8, cv::Scalar(255,255,180), 2);
+            cv::putText(menu, "Number of objects: " + objectCountInput + ((focusOnObjectCount && showCursor) ? "|" : ""), cv::Point(320, 280), cv::FONT_HERSHEY_COMPLEX, 0.8, cv::Scalar(255,255,180), 2);
         }
         // Instructions on the screen
         if (!typingName) {
             cv::putText(menu, "Press Enter to start", cv::Point(100, 400), cv::FONT_HERSHEY_COMPLEX, 0.6, cv::Scalar(255,255,255), 1);
         }
-        cv::putText(menu, "Use W/S or mouseclick to choose game mode", cv::Point(100, 350), cv::FONT_HERSHEY_COMPLEX, 0.6, cv::Scalar(255,255,255), 1);
+        cv::putText(menu, "Use W/S or mouseclick to choose game mode\nand switch to enter number of objects with A/S", cv::Point(100, 350), cv::FONT_HERSHEY_COMPLEX, 0.6, cv::Scalar(255,255,255), 1);
 
         cv::imshow(windowName, menu);
         int key = cv::waitKey(30);
@@ -134,14 +134,12 @@ void GUI::showMainMenuWindow(std::string& playerName, GameModeType& selectedMode
             }
         }
         // object count input
-        else if (typingObjects) {
+        else if (focusOnObjectCount) {
             if (key == 13 || key == 10) {
                 try {
                     n_objects = std::stoi(objectCountInput);
                     if (n_objects <= 0) throw std::invalid_argument("must be positive");
                     confirmed = true;
-                    std::cout << "Confirmation triggered!" << std::endl;
-                    //typingObjects = false;
                 } catch (...) {
                     errorMsg = "Enter a positive number.";
                     objectCountInput.clear();
@@ -152,6 +150,9 @@ void GUI::showMainMenuWindow(std::string& playerName, GameModeType& selectedMode
             }
             else if (key >= '0' && key <= '9' && objectCountInput.size() < 3) {
                 objectCountInput += static_cast<char>(key);
+            }
+            else if (key == 'a') { // Back to choosing game mode
+                focusOnObjectCount = false;
             }
         } 
                     
@@ -165,23 +166,18 @@ void GUI::showMainMenuWindow(std::string& playerName, GameModeType& selectedMode
             else if (key == 's') { // down
                 selectedIndex = (selectedIndex + 1) % gameModes.size();             
             }
+            else if (key == 'd' && selectedIndex == 1) {
+                focusOnObjectCount = true;
+                objectCountInput.clear();
+                errorMsg.clear();
+            }
             else if (key == 13 || key == 10) { // enter to confirm
                 if (selectedIndex == 0) {
                     confirmed = true;
                 }
             }
-                    else if (key == 13 || key == 10) { // ENTER
-                        if (selectedIndex == 1) {
-                            typingObjects = true;
-                            objectCountInput.clear();
-                            errorMsg.clear();
-                        } else {
-                            confirmed = true;
-                        }
-                    }
 
             if (confirmed) {
-                std::cout << "Confirmation triggered!" << std::endl;
                 // Visual feedback
                 menu.setTo(cv::Scalar(0, 255, 0)); 
                 cv::putText(menu, "Starting...", cv::Point(200, 240), cv::FONT_HERSHEY_COMPLEX, 1, cv::Scalar(0, 0, 0), 2);
@@ -244,9 +240,12 @@ std::string GUI::getModeString(GameModeType mode) const {
 }
 
 // Print the player's name and score
-void GUI::printPlayerInfo(const Player& player, GameModeType mode) const {
+void GUI::printPlayerInfo(const Player& player, GameModeType mode, int n_objects) const {
     std::cout << "Player: " << player.getName() << " | Score: " << player.getScore() << std::endl; // Inhalt evtl. noch überarbeiten
     std::cout << "\nStarting game in mode " << getModeString(mode) << "...\n" << std::endl;
+    if (getModeString(mode) == "Catch Squares") {
+    std::cout << "      with " << n_objects << " objects...\n" << std::endl;
+    }
 }
 
 // Shows Game Over screen
