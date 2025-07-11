@@ -8,7 +8,7 @@ void GUI::displayMenu() const {
     std::cout << "-----------------------------------" << std::endl;
     std::cout << " Welcome to the Head Reaction Game " << std::endl;
     std::cout << "-----------------------------------" << std::endl;
-    // TO DO: Weiterer Inhalt des Menu wie Erklärung und co.
+    // TODO: Weiterer Inhalt des Menu wie Erklärung und co.
 } 
 
 /*void GUI::drawHUD(cv::Mat& frame, const Player& player) {
@@ -16,25 +16,91 @@ void GUI::displayMenu() const {
     cv::putText(frame, info, cv::Point(20, 30), cv::FONT_HERSHEY_SIMPLEX, 1.0, cv::Scalar(255, 255, 255), 2);
 } */ // Shows score while playing, add later maybe
 
+void GUI::handleMouseInput(bool& clicked, int x, int y, const std::vector<cv::Rect>& modeButtons) {
+    if (clicked && !m_menuState.typingName) {
+        for (size_t i = 0; i < modeButtons.size(); ++i) {
+            if (modeButtons[i].contains(cv::Point(x, y))) {
+                m_menuState.selectedIndex = static_cast<int>(i); //TODO: Explain static cast
+                break;
+            }
+        }
+        clicked = false;
+    }
+}
+
+void GUI::handleKeyboardInput(int key) {
+    auto& state = m_menuState;
+
+    // Inout name
+    if (state.typingName) {
+        if (key == ENTER_KEY || key == 10) { // Enter 
+            state.errorMsg = validateName(state.nameInput);
+
+            if (state.errorMsg.empty()) {
+                // No error -> proceed to mode selection
+                state.typingName = false;
+            }
+        }
+        else if ((key == BACKSPACE_KEY || key == 127) && !state.nameInput.empty()) { // Backspace
+                state.nameInput.pop_back();
+        }
+        else if (key >= 32 && key <= 126 && state.nameInput.length() < 30) { // All printable characters
+                state.nameInput += static_cast<char>(key); // TODO: static_cast erklären
+        }
+    }
+    
+    // object count input
+    else if (state.focusOnObjectCount) {
+        if (key == ENTER_KEY || key == 10) {
+            try {
+                state.n_objects = std::stoi(state.objectCountInput);
+                if (state.n_objects <= 0) throw std::invalid_argument("Must be positive");
+                state.confirmed = true;
+            } catch (...) {
+                state.errorMsg = "Enter a positive number.";
+                state.objectCountInput.clear();
+            }
+        }
+        else if ((key == BACKSPACE_KEY || key == 127) && !state.objectCountInput.empty()) {
+            state.objectCountInput.pop_back();
+        }
+        else if (key >= '0' && key <= '9' && state.objectCountInput.size() < 3) {
+            state.objectCountInput += static_cast<char>(key);
+        }
+        else if (key == 'a') { // Back to choosing game mode
+            state.focusOnObjectCount = false;
+        }
+    } 
+                    
+    // Select game mode
+    else {
+        // Navigating game mode
+        const int numModes = 2; // total game modes
+        if (key == 'w') { // up
+            state.selectedIndex = (state.selectedIndex - 1 + numModes) % numModes; 
+        }
+        else if (key == 's') { // down
+            state.selectedIndex = (state.selectedIndex + 1) % numModes;             
+        }
+        else if (key == 'd' && state.selectedIndex == 1) {
+            state.focusOnObjectCount = true;
+            state.objectCountInput.clear();
+            state.errorMsg.clear();
+        }
+        else if ((key == ENTER_KEY || key == 10) &&state. selectedIndex == 0) { // enter to confirm
+            state.confirmed = true;
+        }
+    }
+    
+}
+
 void GUI::showMainMenuWindow(std::string& playerName, GameModeType& selectedMode, int& n_objects) {
     const std::string windowName = "Main Menu";
     cv::namedWindow(windowName, cv::WINDOW_AUTOSIZE);
 
-    m_menuframeWidth = 800;
-    m_menuframeHeight = 600;
-
     cv::Mat menu(m_menuframeHeight, m_menuframeWidth, CV_8UC3); // Canvas for menu
 
-    std::string nameInput, objectCountInput = "", errorMsg = "";
-    int selectedIndex = 0;
     std::vector<std::string> gameModes = {"Dodge Balls", "Catch Squares"};
-
-    bool typingName = true;
-    bool focusOnObjectCount = false;
-    bool confirmed = false;
-    bool showCursor = true;
-    int frameCount = 0, prevSelectedIndex = selectedIndex;
-
     std::vector<cv::Rect> modeButtons;
 
     // Mouse operations
@@ -43,8 +109,8 @@ void GUI::showMainMenuWindow(std::string& playerName, GameModeType& selectedMode
         bool clicked = false;
     } mouse;
 
-    cv::setMouseCallback(windowName, [](int event, int x, int y, int, void*userdata) {
-        auto* m = reinterpret_cast<MouseState*>(userdata); // TODO: explain Reinterpret_cast
+    cv::setMouseCallback(windowName, [](int event, int x, int y, int, void* userdata) {
+        MouseState* m = reinterpret_cast<MouseState*>(userdata); // TODO: explain Reinterpret_cast
         if (event == cv::EVENT_LBUTTONDOWN) {
             m->x = x;
             m->y = y;
@@ -52,28 +118,30 @@ void GUI::showMainMenuWindow(std::string& playerName, GameModeType& selectedMode
         }
     }, &mouse);
 
-    while (!confirmed) {
-        menu.setTo(cv::Scalar(30, 30, 30)); // Clear the frame every iteration
-        frameCount++;
+    m_menuState = MenuState{}; // Reset state at the start
+
+    while (!m_menuState.confirmed) {
+        menu.setTo(BG_COLOR); // Clear the frame every iteration
+        m_menuState.frameCount++;
 
         // Cursor toggle every 15 frames
-        if (frameCount % 15 == 0) {
-            showCursor = !showCursor;
+        if (m_menuState.frameCount % 15 == 0) {
+            m_menuState.showCursor = !m_menuState.showCursor;
         }
 
         // Game title
-        cv::putText(menu, "HEAD REACTION GAME", cv::Point(100, 50), cv::FONT_HERSHEY_COMPLEX, 1, cv::Scalar(255,255,255), 2);
+        cv::putText(menu, "HEAD REACTION GAME", {100, 50}, cv::FONT_HERSHEY_COMPLEX, 1, TEXT_COLOR, 2);
 
         // Name input (with blinking cursor "|")
-        std::string cursor = (showCursor && typingName) ? "|" : "";
-        cv::putText(menu, "Name: " + nameInput + cursor, cv::Point(100, 120), cv::FONT_HERSHEY_COMPLEX, 0.8, cv::Scalar(200,200,255), 2);
+        std::string cursor = (m_menuState.showCursor && m_menuState.typingName) ? "|" : "";
+        cv::putText(menu, "Name: " + m_menuState.nameInput + cursor, {100, 120}, cv::FONT_HERSHEY_COMPLEX, 0.8, {200,200,255}, 2); // TODO: define color
 
         // Show error message, if necessary
-        if (!errorMsg.empty()) {
-            cv::putText(menu, errorMsg, cv::Point(100, 160), cv::FONT_HERSHEY_COMPLEX, 0.6, cv::Scalar(0,0,255), 2);
+        if (!m_menuState.errorMsg.empty()) {
+            cv::putText(menu, m_menuState.errorMsg, {100, 160}, cv::FONT_HERSHEY_COMPLEX, 0.6, ERROR_COLOR, 2);
         }
 
-        // Game mode options wiht buttons
+        // Game mode options with buttons
         modeButtons.clear();
         for (int i = 0; i < gameModes.size(); ++i) {
             cv::Point textPos(100, 220 + i * 60);
@@ -82,115 +150,44 @@ void GUI::showMainMenuWindow(std::string& playerName, GameModeType& selectedMode
 
             modeButtons.push_back(button);
 
-            cv::Scalar color = (i == selectedIndex) ? cv::Scalar(0, 255, 0) : cv::Scalar(200, 200, 200);
+            cv::Scalar color = (i == m_menuState.selectedIndex) ? ACTIVE_COLOR : cv::Scalar(200, 200, 200);
             cv::rectangle(menu, button, color, 2);
 
             cv::putText(menu, gameModes[i], textPos, cv::FONT_HERSHEY_COMPLEX, 0.8, color, 2);
         }
 
         // Object count field
-        if (!typingName && selectedIndex == 1) {
-            cv::putText(menu, "Number of objects: " + objectCountInput + ((focusOnObjectCount && showCursor) ? "|" : ""), cv::Point(320, 280), cv::FONT_HERSHEY_COMPLEX, 0.8, cv::Scalar(255,255,180), 2);
+        if (!m_menuState.typingName && m_menuState.selectedIndex == 1) {
+            std::string countText = "Number of objects: " + m_menuState.objectCountInput + ((m_menuState.focusOnObjectCount && m_menuState.showCursor) ? "|" : "");
+            cv::putText(menu, countText, cv::Point(320, 280), cv::FONT_HERSHEY_COMPLEX, 0.8, cv::Scalar(255,255,180), 2);
         }
+
         // Instructions on the screen
-        if (!typingName) {
-            cv::putText(menu, "Press Enter to start", cv::Point(100, 400), cv::FONT_HERSHEY_COMPLEX, 0.6, cv::Scalar(255,255,255), 1);
+        if (!m_menuState.typingName) {
+            cv::putText(menu, "Press Enter to start", cv::Point(100, 400), cv::FONT_HERSHEY_COMPLEX, 0.6, TEXT_COLOR, 1);
         }
-        cv::putText(menu, "Use W/S or mouseclick to choose game mode\nand switch to enter number of objects with A/S", cv::Point(100, 350), cv::FONT_HERSHEY_COMPLEX, 0.6, cv::Scalar(255,255,255), 1);
+        cv::putText(menu, "Use W/S or mouseclick to choose game mode\nand switch to enter number of objects with A/S", cv::Point(100, 350), cv::FONT_HERSHEY_COMPLEX, 0.6, TEXT_COLOR, 1);
 
         cv::imshow(windowName, menu);
         int key = cv::waitKey(30);
 
-        // Mouse click handling
-        if (!typingName) {
-            for (size_t i = 0; i < modeButtons.size(); ++i) {
-                if (modeButtons[i].contains(cv::Point(mouse.x, mouse.y))) {
-                    selectedIndex = static_cast<int>(i); //TODO: Explain static cast
-                }
-            }
-            mouse.clicked = false;
-        }
+        handleMouseInput(mouse.clicked, mouse.x, mouse.y, modeButtons);
+        handleKeyboardInput(key);                   
 
-        // Inout name
-        if (typingName) {
-            if (key == 13 || key == 10) { // Enter 
-                std::string nameTrimmed = nameInput;
-                errorMsg = validateName(nameTrimmed);
-
-                if (errorMsg.empty()) {
-                    // No error -> proceed to mode selection
-                    typingName = false;
-                }
-            }
-            else if (key == 8 || key == 127) { // Backspace
-                if (!nameInput.empty()) {
-                    nameInput.pop_back();
-                }
-            }
-            else if (key >= 32 && key <= 126) { // All printable characters
-                if (nameInput.length() < 30) {
-                    nameInput += static_cast<char>(key); // TODO: static_cast erklären
-                }
-            }
-        }
-        // object count input
-        else if (focusOnObjectCount) {
-            if (key == 13 || key == 10) {
-                try {
-                    n_objects = std::stoi(objectCountInput);
-                    if (n_objects <= 0) throw std::invalid_argument("must be positive");
-                    confirmed = true;
-                } catch (...) {
-                    errorMsg = "Enter a positive number.";
-                    objectCountInput.clear();
-                }
-            }
-            else if (key == 8 || key == 127) {
-                if (!objectCountInput.empty()) objectCountInput.pop_back();
-            }
-            else if (key >= '0' && key <= '9' && objectCountInput.size() < 3) {
-                objectCountInput += static_cast<char>(key);
-            }
-            else if (key == 'a') { // Back to choosing game mode
-                focusOnObjectCount = false;
-            }
-        } 
-                    
-        // Select game mode
-        else {
-            prevSelectedIndex = selectedIndex;
-            // Navigating game mode
-            if (key == 'w') { // up
-                selectedIndex = (selectedIndex - 1 + gameModes.size()) % gameModes.size();
-            }
-            else if (key == 's') { // down
-                selectedIndex = (selectedIndex + 1) % gameModes.size();             
-            }
-            else if (key == 'd' && selectedIndex == 1) {
-                focusOnObjectCount = true;
-                objectCountInput.clear();
-                errorMsg.clear();
-            }
-            else if (key == 13 || key == 10) { // enter to confirm
-                if (selectedIndex == 0) {
-                    confirmed = true;
-                }
-            }
-
-            if (confirmed) {
+            if (m_menuState.confirmed) {
                 // Visual feedback
                 menu.setTo(cv::Scalar(0, 255, 0)); 
                 cv::putText(menu, "Starting...", cv::Point(200, 240), cv::FONT_HERSHEY_COMPLEX, 1, cv::Scalar(0, 0, 0), 2);
                 cv::imshow(windowName, menu);
                 cv::waitKey(250); // pause before opening main window
+                break;
             }
 
             // Reset mouse state
             mouse.clicked = false;
-        }
 
         // Exit menu with ESC
-        if (key == 27) {
+        if (key == ESC_KEY) {
             cv::destroyWindow(windowName);
             std::cout << "The game was exited in the menu." << std::endl;
             exit(0); 
@@ -198,8 +195,11 @@ void GUI::showMainMenuWindow(std::string& playerName, GameModeType& selectedMode
     }
 
     cv::destroyWindow(windowName);
-    playerName = nameInput;
-    selectedMode = (selectedIndex == 0) ? GameModeType::DodgeBalls : GameModeType::CatchSquares;
+
+    // Set outputs
+    playerName = m_menuState.nameInput;
+    selectedMode = (m_menuState.selectedIndex == 0) ? GameModeType::DodgeBalls : GameModeType::CatchSquares;
+    n_objects = m_menuState.n_objects;
 
 }
 
