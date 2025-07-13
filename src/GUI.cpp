@@ -118,7 +118,7 @@ void GUI::showMainMenuWindow(std::string& playerName, GameModeType& selectedMode
         }
     }, &mouse);
 
-    m_menuState = MenuState{}; // Reset state at the start
+    m_menuState = MenuConstants{}; // Reset state at the start
 
     while (!m_menuState.confirmed) {
         menu.setTo(BG_COLOR); // Clear the frame every iteration

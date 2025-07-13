@@ -7,6 +7,7 @@
 #include "Player.hpp"
 #include "FaceDetector.hpp"
 #include "GameMode.hpp"
+#include "constants.hpp"
 
 /*
  * @brief Handles all user interface interactions
@@ -43,24 +44,9 @@ public:
     friend class GUITest_ValidateNameValid_Test;
 
 private: 
-    struct MenuState {
-        std::string nameInput;
-        std::string objectCountInput;
-        std::string errorMsg;
+    MenuConstants m_menuState;
 
-        int selectedIndex = 0;
-        bool typingName = true;
-        bool focusOnObjectCount = false;
-        bool confirmed = false;
-        bool showCursor = true;
-        int frameCount = 0;
-        int n_objects = 0;
-
-        GameModeType m_gameMode; 
-
-    } m_menuState;
-
-    void drawMenuUI(cv::Mat& menu, MenuState menuState, const std::vector<std::string>& gameModes) const;
+    void drawMenuUI(cv::Mat& menu, MenuConstants menuState, const std::vector<std::string>& gameModes) const;
     std::string validateName(const std::string& name) const;
 
     void handleKeyboardInput(int key);
@@ -68,17 +54,6 @@ private:
 
     int m_menuframeWidth = 800;
     int m_menuframeHeight = 600;
-
-    static constexpr int ENTER_KEY = 13;
-    static constexpr int ESC_KEY = 27;
-    static constexpr int BACKSPACE_KEY = 8;
-    static constexpr int MAX_NAME_LENGTH = 30;
-    static constexpr int MAX_OBJECT_COUNT_DIGITS = 3;
-
-    const cv::Scalar BG_COLOR = cv::Scalar(30, 30, 30);
-    const cv::Scalar TEXT_COLOR = cv::Scalar(255, 255, 255);
-    const cv::Scalar ACTIVE_COLOR = cv::Scalar(0, 255, 0);
-    const cv::Scalar ERROR_COLOR = cv::Scalar(0, 0, 255);
 
 };
 
