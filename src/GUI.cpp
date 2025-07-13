@@ -203,9 +203,21 @@ void GUI::showMainMenuWindow(std::string& playerName, GameModeType& selectedMode
 
 }
 
-// Helperfunction for entering correct name that returns empty string if valid, else returns error message
+// Helper function for entering correct name that returns empty string if valid, else returns error message
 std::string GUI::validateName(const std::string& name) const {
-    if (name.length() < 2 || name.length() > 30) {
+
+    // Trim leading spaces to clear up name
+    size_t start = name.find_first_not_of(' ');
+    if (start == std::string::npos) {
+        std::cout << "Invalid name length. Name must be between 2 and 30 characters.\n";
+        return "Name must be 2-30 characters long.";        
+    }
+    
+    // Trim tailing spaces
+    size_t end = name.find_last_not_of(' ');
+    std::string trimmed = name.substr(start, end - start + 1); // new trimmed string
+
+    if (trimmed.length() < 2 || trimmed.length() > 30) {
         std::cout << "Invalid name length. Name must be between 2 and 30 characters.\n";
         return "Name must be 2-30 characters long.";
     }
