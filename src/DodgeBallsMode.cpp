@@ -47,12 +47,10 @@ bool DodgeBallsMode::update(cv::Mat& frame, const std::vector<cv::Rect>& faces) 
 
         if (hit) {
             // Für 3 Sekunden GAME OVER anzeigen
-            for (int i = 0; i < 300; i++) { // ca. 3 Sekunden bei 10ms
                 cv::putText(frame, "GAME OVER", cv::Point(150,200),
                             cv::FONT_HERSHEY_SIMPLEX, 2, cv::Scalar(0,0,255), 3);
-                cv::imshow("Face Detection", frame);
-                cv::waitKey(10);
-            }
+                cv::imshow("Game Window", frame);
+                cv::waitKey(3000);
             return false; // Spiel beenden
         }
 
