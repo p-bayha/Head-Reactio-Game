@@ -37,6 +37,11 @@ public:
     // Shows final score and player name
     void displayFinalScore(const Player& player);
 
+    friend class GUITest_ValidateNameRejectsEmpty_Test;
+    friend class GUITest_ValidateNameTooLong_Test;
+    friend class GUITest_ValidateNameWithInvalidCharacters_Test;
+    friend class GUITest_ValidateNameValid_Test;
+
 private: 
     struct MenuState {
         std::string nameInput;
