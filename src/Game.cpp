@@ -67,6 +67,8 @@ void Game::setupPlayer() {
 void Game::gameLoop() {
     const std::string windowName = "Game Window";
     cv::namedWindow(windowName, cv::WINDOW_AUTOSIZE);
+    int posX = 80, posY = 10;
+    cv::moveWindow(windowName, posX, posY);
     
     if(!m_gameModePtr) {
         std::cerr << "Error: Game mode pointer is not initialized!" << std::endl;

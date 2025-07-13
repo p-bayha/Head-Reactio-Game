@@ -97,6 +97,7 @@ void GUI::handleKeyboardInput(int key) {
 void GUI::showMainMenuWindow(std::string& playerName, GameModeType& selectedMode, int& n_objects) {
     const std::string windowName = "Main Menu";
     cv::namedWindow(windowName, cv::WINDOW_AUTOSIZE);
+    cv::moveWindow(windowName, m_posX, m_posY);
 
     cv::Mat menu(m_menuframeHeight, m_menuframeWidth, CV_8UC3); // Canvas for menu
 
@@ -130,44 +131,65 @@ void GUI::showMainMenuWindow(std::string& playerName, GameModeType& selectedMode
         }
 
         // Game title
-        cv::putText(menu, "HEAD REACTION GAME", {100, 50}, cv::FONT_HERSHEY_COMPLEX, 1, TEXT_COLOR, 2);
+        std::string title = "HEAD REACTION GAME";
+        cv::Size titleSize = cv::getTextSize(title, cv::FONT_HERSHEY_COMPLEX, 1.5, 2, &m_baseline);
+        cv::putText(menu, title, {m_centerX - titleSize.width / 2, 80}, cv::FONT_HERSHEY_COMPLEX, 1.5, TEXT_COLOR, 2);
 
         // Name input (with blinking cursor "|")
         std::string cursor = (m_menuState.showCursor && m_menuState.typingName) ? "|" : "";
-        cv::putText(menu, "Name: " + m_menuState.nameInput + cursor, {100, 120}, cv::FONT_HERSHEY_COMPLEX, 0.8, {200,200,255}, 2); // TODO: define color
+        std::string nameText = "Name: " + m_menuState.nameInput;
+        cv::Size nameSize = cv::getTextSize(nameText, cv::FONT_HERSHEY_COMPLEX, 1.0, 2, &m_baseline); 
+        cv::Point nameOrg(m_centerX - nameSize.width / 2, 160);
+        cv::putText(menu, nameText, {m_centerX - nameSize.width / 2, 160}, cv::FONT_HERSHEY_COMPLEX, 1.0, {200,200,255}, 2); // TODO: define color
+
+        // Draw the cursor
+        if (m_menuState.showCursor && m_menuState.typingName) {
+            int cursorX = nameOrg.x + nameSize.width + 2;
+            int cursorY = nameOrg.y + nameSize.height;
+            cv::putText(menu, "|", {cursorX, nameOrg.y}, cv::FONT_HERSHEY_COMPLEX, 1.0, {200,200,255}, 2); // TODO: color
+        }
 
         // Show error message, if necessary
         if (!m_menuState.errorMsg.empty()) {
-            cv::putText(menu, m_menuState.errorMsg, {100, 160}, cv::FONT_HERSHEY_COMPLEX, 0.6, ERROR_COLOR, 2);
+            cv::Size errorSize = cv::getTextSize(m_menuState.errorMsg, cv::FONT_HERSHEY_COMPLEX, 0.8, 2, &m_baseline);
+            cv::putText(menu, m_menuState.errorMsg, {m_centerX - errorSize.width / 2, 200}, cv::FONT_HERSHEY_COMPLEX, 0.8, ERROR_COLOR, 2);
         }
 
         // Game mode options with buttons
         modeButtons.clear();
         for (int i = 0; i < gameModes.size(); ++i) {
-            cv::Point textPos(100, 220 + i * 60);
-            cv::Size textSize = cv::getTextSize(gameModes[i], cv::FONT_HERSHEY_COMPLEX, 0.8, 2, 0);
-            cv::Rect button(textPos.x - 10, textPos.y - textSize.height - 10, textSize.width + 20, textSize.height + 20);
+            cv::Size modeSize = cv::getTextSize(gameModes[i], cv::FONT_HERSHEY_COMPLEX, 1.0, 2, &m_baseline);
+            cv::Point textPos(m_centerX - modeSize.width / 2, 270 + i * 80);
+            cv::Rect button(textPos.x - 20, textPos.y - modeSize.height - 20, modeSize.width + 40, modeSize.height + 40);
 
             modeButtons.push_back(button);
 
-            cv::Scalar color = (i == m_menuState.selectedIndex) ? ACTIVE_COLOR : cv::Scalar(200, 200, 200);
+            cv::Scalar color = (i == m_menuState.selectedIndex) ? ACTIVE_COLOR : cv::Scalar(200, 200, 200); // TODO: color define in constants
             cv::rectangle(menu, button, color, 2);
-
-            cv::putText(menu, gameModes[i], textPos, cv::FONT_HERSHEY_COMPLEX, 0.8, color, 2);
+            cv::putText(menu, gameModes[i], textPos, cv::FONT_HERSHEY_COMPLEX, 1.0, color, 2);
         }
 
         // Object count field
         if (!m_menuState.typingName && m_menuState.selectedIndex == 1) {
             std::string countText = "Number of objects: " + m_menuState.objectCountInput + ((m_menuState.focusOnObjectCount && m_menuState.showCursor) ? "|" : "");
-            cv::putText(menu, countText, cv::Point(320, 280), cv::FONT_HERSHEY_COMPLEX, 0.8, cv::Scalar(255,255,180), 2);
+            const cv::Rect& selectedButton = modeButtons[1];
+            int padding = 20;
+
+            cv::Size countSize = cv::getTextSize(countText, cv::FONT_HERSHEY_COMPLEX, 0.9, 2, &m_baseline);
+            cv::Point countPosition(selectedButton.x + selectedButton.width + padding, selectedButton.y + selectedButton.height / 2 + countSize.height / 2);
+            cv::putText(menu, countText, countPosition, cv::FONT_HERSHEY_COMPLEX, 0.9, cv::Scalar(255,255,180), 2); // TODO: Color as constant
         }
 
         // Instructions on the screen
         if (!m_menuState.typingName) {
-            cv::putText(menu, "Press Enter to start", cv::Point(100, 400), cv::FONT_HERSHEY_COMPLEX, 0.6, TEXT_COLOR, 1);
-        }
-        cv::putText(menu, "Use W/S or mouseclick to choose game mode\nand switch to enter number of objects with A/S", cv::Point(100, 350), cv::FONT_HERSHEY_COMPLEX, 0.6, TEXT_COLOR, 1);
+            std::string helpInstruction = "Use W/S or mouse to select game mode. Press A/S to switch to enter number of objects.";
+            cv::Size helpInstructionSize = cv::getTextSize(helpInstruction, cv::FONT_HERSHEY_COMPLEX, 0.6, 1, &m_baseline);
+            cv::putText(menu, helpInstruction, {m_centerX - helpInstructionSize.width / 2, m_menuframeHeight - 80}, cv::FONT_HERSHEY_COMPLEX, 0.6, TEXT_COLOR, 1);
 
+            std::string instruction = "Press Enter to start";
+            cv::Size instructionSize = cv::getTextSize(instruction, cv::FONT_HERSHEY_COMPLEX, 0.7, 1, &m_baseline);
+            cv::putText(menu, instruction, {m_centerX - instructionSize.width / 2, m_menuframeHeight -40}, cv::FONT_HERSHEY_COMPLEX, 0.7, TEXT_COLOR, 1);
+        }
         cv::imshow(windowName, menu);
         int key = cv::waitKey(30);
 
@@ -176,8 +198,12 @@ void GUI::showMainMenuWindow(std::string& playerName, GameModeType& selectedMode
 
             if (m_menuState.confirmed) {
                 // Visual feedback
-                menu.setTo(cv::Scalar(0, 255, 0)); 
-                cv::putText(menu, "Starting...", cv::Point(200, 240), cv::FONT_HERSHEY_COMPLEX, 1, cv::Scalar(0, 0, 0), 2);
+                menu.setTo(cv::Scalar(0, 255, 0)); // TODO: color
+                std::string startMessage = "Starting...";
+                cv::Size textSize = cv::getTextSize(startMessage, cv::FONT_HERSHEY_COMPLEX, 1.0, 2, &m_baseline);
+                int centerX = m_menuframeWidth / 2 - textSize.width / 2;
+                int centerY = m_menuframeHeight / 2 - textSize.height / 2;
+                cv::putText(menu, startMessage, {centerX, centerY}, cv::FONT_HERSHEY_COMPLEX, 1.0, cv::Scalar(0, 0, 0), 2); //TODO: color
                 cv::imshow(windowName, menu);
                 cv::waitKey(250); // pause before opening main window
                 break;

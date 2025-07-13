@@ -52,9 +52,16 @@ private:
     void handleKeyboardInput(int key);
     void handleMouseInput(bool& clicked,int x, int y, const std::vector<cv::Rect>& modeButtons);
 
-    int m_menuframeWidth = 800;
-    int m_menuframeHeight = 600;
+    const int m_menuframeWidth = 1280;
+    const int m_menuframeHeight = 720;
+    const int m_centerX = m_menuframeWidth / 2;
+    int m_baseline = 0;
 
+    const int m_screenWidth = 1440;
+    const int m_screenHeight = 740;
+
+    const int m_posX = (m_screenWidth - m_menuframeWidth) / 2;
+    const int m_posY = (m_screenHeight - m_menuframeHeight) / 2;
 };
 
 #endif // GUI_HPP
