@@ -23,11 +23,11 @@ public:
     // Shows the graphical main menu, allowing for players to enter the name and select the game mode
     void showMainMenuWindow(std::string& playerName, GameModeType& selectedMode, int& n_objects);
 
-    // Shows score while playing, add later maybe
-    //void GUI::drawHUD(cv::Mat& frame, const Player& player)
+    void drawGameMode(cv::Mat& frame, std::string currentGameMode);
 
-    // Returns current mode as string
-    std::string getModeString(GameModeType mode) const;
+    void drawScore(cv::Mat& frame, int score) const;
+
+    void drawGameOver(cv::Mat& frame);
 
     // Prints the player's name and score to the terminal.
     void printPlayerInfo(const Player& player, GameModeType mode, int n_objects) const;
@@ -48,6 +48,18 @@ private:
 
     void drawMenuUI(cv::Mat& menu, MenuConstants menuState, const std::vector<std::string>& gameModes) const;
     std::string validateName(const std::string& name) const;
+
+    void drawTitle(cv::Mat& menu);
+
+    void drawNameInput(cv::Mat& menu);
+
+    void drawGameModeButtons(cv::Mat& menu, std::vector<std::string> gameModes, std::vector<cv::Rect>& modeButtons);
+
+    void drawErrorMessage(cv::Mat& menu, std::vector<std::string> gameModes, std::vector<cv::Rect>& modeButtons);
+
+    void drawInstructions(cv::Mat& menu);
+
+    std::string getModeString(GameModeType mode) const;
 
     void handleKeyboardInput(int key);
     void handleMouseInput(bool& clicked,int x, int y, const std::vector<cv::Rect>& modeButtons);

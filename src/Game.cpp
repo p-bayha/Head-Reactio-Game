@@ -54,9 +54,9 @@ void Game::setupPlayer() {
     //std::unique_ptr<GameMode> m_gameModePtr;
     
     if (mode == GameModeType::CatchSquares) {
-        m_gameModePtr = std::make_unique<CatchSquaresMode>(m_player, 640, 480, n_objects);
+        m_gameModePtr = std::make_unique<CatchSquaresMode>(m_player, m_gui, 640, 480, n_objects);
     } else if (mode == GameModeType::DodgeBalls) {
-        m_gameModePtr = std::make_unique<DodgeBallsMode>(m_player, 640, 480);
+        m_gameModePtr = std::make_unique<DodgeBallsMode>(m_player, m_gui, 640, 480);
     }
 
     // Show player information
