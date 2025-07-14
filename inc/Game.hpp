@@ -8,13 +8,6 @@
 #include "GameMode.hpp"
 #include "GUI.hpp"
 
-#include "Circle.hpp" //
-#include "Square.hpp" //
-#include "GameObject.hpp" //
-#include "Utils.hpp" //
-
-
-
 /*
  * @brief Main controller class. 
  Manages player setup, game loop, face detection, GUI update and scoring.

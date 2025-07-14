@@ -54,52 +54,28 @@ void Game::setupPlayer() {
     //std::unique_ptr<GameMode> m_gameModePtr;
     
     if (mode == GameModeType::CatchSquares) {
-        int n;
-        std::cout << "Enter number of objects (N): ";
-        std::cin >> n; 
-        m_gameModePtr = std::make_unique<CatchSquaresMode>(m_player, 640, 480, n);
+        m_gameModePtr = std::make_unique<CatchSquaresMode>(m_player, m_gui, 640, 480, n_objects);
     } else if (mode == GameModeType::DodgeBalls) {
-        m_gameModePtr = std::make_unique<DodgeBallsMode>(m_player, 640, 480);
+        m_gameModePtr = std::make_unique<DodgeBallsMode>(m_player, m_gui, 640, 480);
     }
 
     // Show player information
-    m_gui.printPlayerInfo(m_player, m_gameMode);
+    m_gui.printPlayerInfo(m_player, m_gameMode, n_objects);
 }
 
 // Main game loop 
 void Game::gameLoop() {
     const std::string windowName = "Game Window";
     cv::namedWindow(windowName, cv::WINDOW_AUTOSIZE);
-
-    /* Inhalt der GUI im Menu
-      while (mode != 1 && mode != 2) {
-        std::cout << "Select mode (1 = Dodge the balls, 2 = Catch the squares): ";
-        std::cin >> mode;
-        if (mode != 1 && mode != 2) {
-            std::cout << "Invalid mode, please enter 1 or 2." << std::endl;
-        }
-    } */
-     // if (!initialize()) return;
+    int posX = 80, posY = 10;
+    cv::moveWindow(windowName, posX, posY);
+    
     if(!m_gameModePtr) {
         std::cerr << "Error: Game mode pointer is not initialized!" << std::endl;
         return;
     }
 
     m_gameModePtr->initialize();
-
-    /*
-    cv::Mat frame;
-    while (true) {
-        cap >> frame;
-        if (frame.empty()) break;
-        cv::flip(frame, frame, 1);
-
-        
-        faceCascade.detectMultiScale(frame, faces, 1.1, 3, 0, cv::Size(60, 60));
-
-        for (const auto& face : faces) {
-            cv::rectangle(frame, face, cv::Scalar(0, 255, 0), 2);
-        } */
 
     while(m_gameRunning) {
         cv::Mat frame = m_faceDetector.getProcessedFrame();

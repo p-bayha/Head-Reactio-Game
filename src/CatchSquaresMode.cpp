@@ -4,8 +4,8 @@
 #include <cstdlib>
 #include <opencv2/opencv.hpp>
 
-CatchSquaresMode::CatchSquaresMode(Player& player, int m_frameHight, int m_frameWidth, int totalObjects)
-    : m_player(player), m_frameWidth(m_frameHight), m_frameHeight(m_frameHight),
+CatchSquaresMode::CatchSquaresMode(Player& player, GUI& gui, int frameHight, int frameWidth, int totalObjects)
+    : m_player(player), m_gui(gui), m_frameWidth(frameWidth), m_frameHeight(frameHight),
       m_spawnTimer(0), m_remainingObjects(totalObjects) {
       }
 
@@ -57,12 +57,9 @@ bool CatchSquaresMode::update(cv::Mat& frame, const std::vector<cv::Rect>& faces
         }
     }
 
-    // Anzeige oben
-    cv::putText(frame, "Catch the Squares!", cv::Point(10,30),
-                cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255,255,255), 2);
-    cv::putText(frame, "Score: " + std::to_string(m_player.getScore()),
-                cv::Point(10,70), cv::FONT_HERSHEY_SIMPLEX, 1,
-                cv::Scalar(255,255,255), 2);
+    // Anzeige für Spieler
+    m_gui.drawGameMode(frame, "Catch the Squares!");
+    m_gui.drawScore(frame, m_player.getScore());
 
     // Ende nur wenn N erreicht und alle Objekte weg
     return !(m_remainingObjects <= 0 && m_objects.empty());

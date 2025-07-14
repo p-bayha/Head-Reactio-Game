@@ -1,11 +1,12 @@
 #include "DodgeBallsMode.hpp"
 #include "Player.hpp"
 #include "FaceDetector.hpp"
+#include "GUI.hpp"
 #include <cstdlib>
 #include <opencv2/opencv.hpp>
 
-DodgeBallsMode::DodgeBallsMode(Player& player, int m_frameWidth, int m_frameHight)
-    : m_player(player), m_frameWidth(m_frameWidth), m_frameHeight(m_frameHight), m_spawnTimer(0) {}
+DodgeBallsMode::DodgeBallsMode(Player& player, GUI& gui, int m_frameWidth, int m_frameHight)
+    : m_player(player), m_gui(gui), m_frameWidth(m_frameWidth), m_frameHeight(m_frameHight), m_spawnTimer(0) {}
 
 void DodgeBallsMode::initialize() {
     m_player.setScore(0);
@@ -47,12 +48,9 @@ bool DodgeBallsMode::update(cv::Mat& frame, const std::vector<cv::Rect>& faces) 
 
         if (hit) {
             // Für 3 Sekunden GAME OVER anzeigen
-            for (int i = 0; i < 300; i++) { // ca. 3 Sekunden bei 10ms
-                cv::putText(frame, "GAME OVER", cv::Point(150,200),
-                            cv::FONT_HERSHEY_SIMPLEX, 2, cv::Scalar(0,0,255), 3);
-                cv::imshow("Face Detection", frame);
-                cv::waitKey(10);
-            }
+            m_gui.drawGameOver(frame);
+            cv::imshow("Game Window", frame);
+            cv::waitKey(3000);
             return false; // Spiel beenden
         }
 
@@ -66,10 +64,8 @@ bool DodgeBallsMode::update(cv::Mat& frame, const std::vector<cv::Rect>& faces) 
     }
 
     // Anzeige für Spieler
-    cv::putText(frame, "Dodge the Balls!", cv::Point(10,30),
-                cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255,255,255), 2);
-    cv::putText(frame, "Score: " + std::to_string(m_player.getScore()),
-                cv::Point(10,70), cv::FONT_HERSHEY_SIMPLEX, 1, cv::Scalar(255,255,255), 2);
+    m_gui.drawGameMode(frame, "Dodge the Balls!");
+    m_gui.drawScore(frame, m_player.getScore());
 
     return true; // Spiel läuft weiter
 }
