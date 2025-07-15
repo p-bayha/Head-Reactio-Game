@@ -5,13 +5,13 @@ The current implementation builds a face detection starter program.
 
 ## **How to build and run**
 ### _**Prerequisites**_
-CMake (tested with version 3.x)
-Visual Studio (tested with VS 2019, using vc16)
-OpenCV installed and built (with path set in OpenCV_DIR)
+- CMake (tested with version 3.x)
+- Visual Studio (tested with VS 2019, using vc16)
+- OpenCV installed and built (with path set in OpenCV_DIR)
 
 ## **Build instructions**
 1) Prepare build directory
-   (optional: Remove-Item -Recurse -Force .\build
+   - (optional: Remove-Item -Recurse -Force .\build
              mkdir build)
    - cd build
 2) Configure with CMake
