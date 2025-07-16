@@ -53,7 +53,9 @@ If all files are already in place:
 ```powershell
 .\Debug\FaceDetectionStarter.exe
 ```
-#### Option 2- if `Error: Could not load Haar cascade file.` occurs: 
+#### Option 2
+If `Error: Could not load Haar cascade file.` occurs:
+
 The program expects the `haarcascade_frontalface_default.xml` to be in the **same directory** as your `.exe` (typically `build\Debug`).
 
 So copy the Haar cascade file and the OpenCV DLLs there:
