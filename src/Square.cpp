@@ -1,12 +1,13 @@
 #include "Square.hpp"
 
 void Square::draw(cv::Mat& frame) {
-    // Ein grünes Rechteck zeichnen:
+    // Draw a green rectangle representing the square
     cv::rectangle(frame, cv::Rect(m_position.x, m_position.y, m_size.width, m_size.height), m_color, -1);
 }
 
 bool Square::checkCollision(const cv::Rect& face) {
-    // Prüfen, ob das Quadrat mit dem Gesicht (Rechteck) kollidiert
+    // Check if the square collides with the face (rectangle)
     cv::Rect squareRect(m_position.x, m_position.y, m_size.width, m_size.height);
-    return (squareRect & face).area() > 0; // Schnittmenge der Rechtecke > 0
+    // Return true if the intersection area of the two rectangles is greater than 0
+    return (squareRect & face).area() > 0;
 }
