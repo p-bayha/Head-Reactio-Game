@@ -99,12 +99,30 @@ void GUI::drawScore(cv::Mat& frame, int score) const {
     cv::putText(frame, scoreText, {HUD_MARGIN_X, HUD_MARGIN_Y + HUD_LINE_SPACING}, HUD_FONT, HUD_FONT_SCALE, TEXT_COLOR, HUD_FONT_THICKNESS); 
 }
 
-void GUI::drawGameOver(cv::Mat& frame) {
-    std::string GameOverText = "GAME OVER";
-    cv::Size GameOverTextSize = cv::getTextSize(GameOverText, HUD_FONT, 2.0, 3, &m_baseline);
-    cv::Point center((frame.cols - GameOverTextSize.width) / 2, (frame.rows + GameOverTextSize.height) / 2);
-    cv::putText(frame, GameOverText, center, HUD_FONT, 2.0, ERROR_COLOR, 3); 
+void GUI::drawGameOver(cv::Mat& frame, const Player& player) {
+    cv::Scalar whiteColor(255, 255, 255);
+    cv::Scalar redColor(0, 0, 255);
+
+    // GAME OVER Text 
+    int gameOverFont = cv::FONT_HERSHEY_TRIPLEX;
+    std::string gameOverText = "GAME OVER";
+    cv::Size textSize = cv::getTextSize(gameOverText, gameOverFont, 2.5, 5, &m_baseline);
+    cv::Point center((frame.cols - textSize.width) / 2, (frame.rows + textSize.height) / 2 - 50);
+    cv::putText(frame, gameOverText, center, gameOverFont, 2.5, redColor, 5);
+
+    // Name text
+    std::string nameText = "Name: " + player.getName();
+    cv::Size nameSize = cv::getTextSize(nameText, HUD_FONT, 1.0, 2, &m_baseline);
+    cv::Point namePos((frame.cols - nameSize.width) / 2, center.y + 70);
+    cv::putText(frame, nameText, namePos, HUD_FONT, 1.0, whiteColor, 2);
+
+    // Score text
+    std::string scoreText = "Score: " + std::to_string(player.getScore());
+    cv::Size scoreSize = cv::getTextSize(scoreText, HUD_FONT, 1.0, 2, &m_baseline);
+    cv::Point scorePos((frame.cols - scoreSize.width) / 2, namePos.y + 40);
+    cv::putText(frame, scoreText, scorePos, HUD_FONT, 1.0, whiteColor, 2);
 }
+
 
 void GUI::showMainMenuWindow(std::string& playerName, GameModeType& selectedMode, int& n_objects) {
     const std::string windowName = "Main Menu";
@@ -157,7 +175,7 @@ void GUI::showMainMenuWindow(std::string& playerName, GameModeType& selectedMode
 
             if (m_menuState.confirmed) {
                 // Visual feedback
-                menu.setTo(MENU_COLOR); 
+                menu.setTo(MENU_COLOR);
                 std::string startMessage = "Starting...";
                 cv::Size textSize = cv::getTextSize(startMessage, MENU_FONT, START_FONT_SCALE, START_THICKNESS, &m_baseline);
                 int centerX = m_menuframeWidth / 2 - textSize.width / 2;
@@ -176,7 +194,7 @@ void GUI::showMainMenuWindow(std::string& playerName, GameModeType& selectedMode
         if (key == ESC_KEY) {
             cv::destroyWindow(windowName);
             std::cout << "The game was exited in the menu." << std::endl;
-            exit(0); 
+            exit(0);
         }
     }
 
@@ -246,7 +264,7 @@ void GUI::drawErrorMessage(cv::Mat& menu, std::vector<std::string> gameModes, st
 
 void GUI::drawInstructions(cv::Mat&menu) {
     if (!m_menuState.typingName) { 
-        std::string helpInstruction = "Use W/S or mouse to select game mode. Press A/S to switch to enter number of objects.";
+        std::string helpInstruction = "Use W/S or mouse to select game mode. Press A/D to switch to enter number of objects.";
         cv::Size helpInstructionSize = cv::getTextSize(helpInstruction, MENU_FONT, HELP_FONT_SCALE, HELP_THICKNESS, &m_baseline);
         cv::putText(menu, helpInstruction, {m_centerX - helpInstructionSize.width / 2, m_menuframeHeight - 80}, MENU_FONT, HELP_FONT_SCALE, TEXT_COLOR, HELP_THICKNESS);
 
