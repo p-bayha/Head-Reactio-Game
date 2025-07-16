@@ -11,7 +11,7 @@ std::string Player::getName() const {
     return m_name;
 }
 
-//Change the player's score 
+// Adjusts the score by a given delta, clamping it to zero if necessary 
 void Player::changeScore(int delta) {
     m_score += delta;
     if (m_score < 0) {
@@ -19,15 +19,15 @@ void Player::changeScore(int delta) {
     }
 }
 
-//Set the player's score (never below zero)
+//Set the player's score directly, clamping it to zero if negative
 void Player::setScore(int score) {
     if (score < 0) {
-        std::cerr << "[Warning] Attempted to set negative score (" << score << "). Clamping to 0." << std::endl;
+        std::cerr << "[Warning] Tried to set negative score (" << score << "). Clamping to 0." << std::endl;
     }
     m_score = (score >= 0) ? score : 0;
 }
 
-// Get the player's score
+// Returns the player's current score
 int Player::getScore() const {
     return m_score;
 }
