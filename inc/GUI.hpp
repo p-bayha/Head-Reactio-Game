@@ -27,7 +27,7 @@ public:
 
     void drawScore(cv::Mat& frame, int score) const;
 
-    void drawGameOver(cv::Mat& frame);
+    void drawGameOver(cv::Mat& frame, const Player& player);
 
     // Prints the player's name and score to the terminal.
     void printPlayerInfo(const Player& player, GameModeType mode, int n_objects) const;
