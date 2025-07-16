@@ -19,31 +19,31 @@ This guide explains how to build and run the unit tests for the `FaceDetectionSt
 If you are using Windows PowerShell, here is the **exact working sequence**:
 
 
-# Step 1 – Clean old build files
+### Step 1 – Clean old build files
 ```powershell
 Remove-Item -Recurse -Force build
 mkdir build
 cd build
 ```
 
-# Step 2 – Configure CMake (in Debug mode)
+### Step 2 – Configure CMake (in Debug mode)
 ```powershell
 cmake .. -DCMAKE_BUILD_TYPE=Debug
 ```
 
-# Step 3 – Compile the project including tests
+### Step 3 – Compile the project including tests
 ```powershell
 cmake --build .
 ```
 
 ## Run the Tests
 Once build completes:
-# Step 4 – Find the test executable
+### Step 4 – Find the test executable
 ```powershell
 Get-ChildItem -Recurse -Filter FaceDetectionTests.exe
 ```
 
-# Step 5 – Run the test executable
+### Step 5 – Run the test executable
 ```powershell
 & .\Debug\FaceDetectionTests.exe
 ```
