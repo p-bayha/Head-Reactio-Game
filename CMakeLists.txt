@@ -54,17 +54,27 @@ file(GLOB TEST_SOURCES ${TEST_DIR}/*.cpp)
 add_executable(FaceDetectionTests 
     tests/test_player.cpp
     src/Player.cpp
+
     tests/test_faceDetector.cpp
     src/FaceDetector.cpp
-    tests/test_game.cpp
-    #src/game.cpp
+
     tests/test_GUI.cpp
     src/GUI.cpp
-    )
+
+    tests/test_CatchSquaresMode.cpp
+    src/CatchSquaresMode.cpp
+
+    tests/test_CircleSquare.cpp
+    src/Circle.cpp
+    src/Square.cpp
+
+    tests/test_DodgeBallsMode.cpp
+    src/DodgeBallsMode.cpp
+)
 
 # Includes and linking for test executable
 target_include_directories(FaceDetectionTests
-    PRIVATE ${INC_DIR} ${TEST_DIR}
+    PRIVATE ${INC_DIR} ${SRC_DIR} ${TEST_DIR}
 )
 target_link_libraries(FaceDetectionTests
     PRIVATE GTest::gtest_main ${OpenCV_LIBS}

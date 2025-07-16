@@ -14,7 +14,7 @@ Game::Game(const std::string& cascadePath) : m_faceDetector(cascadePath), m_game
 void Game::startGame() {
     // Show menu and setup player name in the terminal
     m_gui.displayMenu();
-    
+
     setupPlayer();
 
     // Now it should also call display menu window
