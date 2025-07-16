@@ -2,14 +2,16 @@
 #define DODGEBALLSMODE_HPP
 
 #include "GameMode.hpp"
+#include "Circle.hpp"
 #include "Player.hpp"
+
 #include "GUI.hpp"
-#include <opencv2/opencv.hpp>
+#include <vector>
+#include <memory>
 
 class DodgeBallsMode : public GameMode {
 public:
-    DodgeBallsMode(Player& player, GUI& gui, int height, int width);
-
+    DodgeBallsMode(Player& player, GUI& gui, int frameWidth, int frameHeight); // <- muss exakt so drin stehen
     void initialize() override;
     bool update(cv::Mat& frame, const std::vector<cv::Rect>& faces) override;
     int getScore() const override;
@@ -17,8 +19,10 @@ public:
 private:
     Player& m_player;
     GUI& m_gui;
-    int m_frameHeight;
     int m_frameWidth;
+    int m_frameHeight;
+    int m_spawnTimer;
+    std::vector<std::shared_ptr<Circle>> m_circles;
 };
 
 #endif

@@ -1,5 +1,10 @@
 #include "Square.hpp"
 
+void Square::move() {
+    m_position.y += static_cast<int>(m_speed.y);
+}
+#include "Square.hpp"
+
 void Square::draw(cv::Mat& frame) {
     // Draw a green rectangle representing the square
     cv::rectangle(frame, cv::Rect(m_position.x, m_position.y, m_size.width, m_size.height), m_color, -1);

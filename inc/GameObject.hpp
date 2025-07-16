@@ -11,9 +11,8 @@ public:
 
     virtual ~GameObject() = default;
 
-    virtual void move() {
-        m_position.y += static_cast<int>(m_speed.y);
-    }
+    // Move the object by its speed (default: do nothing, override in derived)
+    virtual void move() = 0;
 
     virtual void draw(cv::Mat& frame) = 0;
     virtual bool checkCollision(const cv::Rect& face) = 0;

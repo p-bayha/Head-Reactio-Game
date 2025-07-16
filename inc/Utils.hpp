@@ -9,7 +9,7 @@ struct Size {
 };
 
 struct Speed {
-    float y;  // nur vertikal
+    float y;  // only vertical speed for simplicity
 };
 
 using Position = cv::Point;
