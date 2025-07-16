@@ -77,16 +77,34 @@ static constexpr int HELP_THICKNESS = 1;
 static constexpr int INSTRUCTION_THICKNESS = 1;
 static constexpr int START_THICKNESS= 2;
 
+// Timings 
 static constexpr int START_MESSAGE_DELAY_MS = 250;
+
+// Default fallback resolution for faceDetector
+static constexpr int DEFAULT_CAMERA_WIDTH = 1200;
+static constexpr int DEFAULT_CAMERA_HEIGHT = 1000;
+
+// Face detection parameters
+static constexpr double FACE_DETECTION_SCALE_FACTOR = 1.1;
+static constexpr int FACE_DETECTION_MIN_NEIGHBORS = 3;
+static constexpr int FACE_DETECTION_FLAGS = 0;
+static constexpr int FACE_DETECTION_MIN_SIZE = 60;
+
+// Face drawing parameters
+static constexpr int FACE_RECTANGLE_THICKNESS = 2;
+static constexpr int DEFAULT_FACE_RECTANGLE_WIDTH = 100;
+static constexpr int DEFAULT_FACE_RECTANGLE_HEIGHT = 100;
+
 // Colors 
-const cv::Scalar BG_COLOR = cv::Scalar(30, 30, 30);
-const cv::Scalar TEXT_COLOR = cv::Scalar(255, 255, 255);
-const cv::Scalar ACTIVE_COLOR = cv::Scalar(0, 255, 0);
-const cv::Scalar ERROR_COLOR = cv::Scalar(0, 0, 255);
-const cv::Scalar CURSOR_COLOR = cv::Scalar(200, 200, 255);
-const cv::Scalar COUNT_COLOR = cv::Scalar(255, 255, 180);
-const cv::Scalar BUTTON_INACTIVE_COLOR = cv::Scalar(200, 200, 200);
-const cv::Scalar MENU_COLOR = cv::Scalar(200, 255, 200);
-const cv::Scalar START_TEXT_COLOR = cv::Scalar(0, 0, 0);
+const cv::Scalar BG_COLOR = cv::Scalar(30, 30, 30); // dark gray
+const cv::Scalar TEXT_COLOR = cv::Scalar(255, 255, 255); // white
+const cv::Scalar ACTIVE_COLOR = cv::Scalar(0, 255, 0); // green
+const cv::Scalar ERROR_COLOR = cv::Scalar(0, 0, 255); // red
+const cv::Scalar CURSOR_COLOR = cv::Scalar(200, 200, 255); // light blue
+const cv::Scalar COUNT_COLOR = cv::Scalar(255, 255, 180); // yellow-tinted white
+const cv::Scalar BUTTON_INACTIVE_COLOR = cv::Scalar(200, 200, 200); // gray
+const cv::Scalar MENU_COLOR = cv::Scalar(200, 255, 200); // pale green
+const cv::Scalar START_TEXT_COLOR = cv::Scalar(0, 0, 0); // black on light background
+const cv::Scalar FACE_RECTANGLE_COLOR = cv::Scalar(0, 255, 0); // green
 
 #endif // CONSTANTS_HPP

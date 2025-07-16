@@ -4,109 +4,126 @@
 #include <ctime>
 #include <iostream>
 #include <opencv2/opencv.hpp>
+#include "constants.hpp"
 
-// Constructor
+// Constructor initialize FaceDetector with given cascade path, set initial game state
 Game::Game(const std::string& cascadePath) : m_faceDetector(cascadePath), m_gameMode(GameModeType::None), m_gameRunning(false) {
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
     }
 
-
-// Starts game
+// Starts the game: show menu, setup player, initialize face detector, runs main loop
 void Game::startGame() {
-    // Show menu and setup player name in the terminal
-    m_gui.displayMenu();
-    
-    // m_gui.drawHUD(cv::Mat& frame, const Player& player, GameMode mode); 
 
-    setupPlayer();
+    if (!m_testMode) { 
+        // Display main menu and get player input
+        m_gui.displayMenu();
 
-    // Now it should also call display menu window
+        setupPlayer();
+    } else {
+        // testing only: Skip GUI and initialize a dummy/game mode.
+        m_player.setName("TestPlayer");
+        m_gameMode = GameModeType::DodgeBalls;
+        m_gameModePtr = std::make_unique<DodgeBallsMode>(m_player, m_gui, 640, 680);
+    }
 
-    // Initializes FaceDetector
+    // Initializes FaceDetector and verify success
     if (!m_faceDetector.initialize()) {
-        std::cerr << "Error initializing FaceDetector.\n";
+        std::cerr << "[Error] Failed to initialize FaceDetector.\n";
         return;
     }
 
     if(!m_faceDetector.isInitialized()) {
-        std::cerr << "Detector not ready." << std::endl;
+        std::cerr << "[Error] FaceDetector not ready after initialization.\n";
         return;
     }
 
     m_gameRunning = true;
 
-    gameLoop(); // Start game loop
-    endGame(); 
+    gameLoop(); // Run main game loop
+    endGame(); // Show end game screen and final score
 }
 
-// Setup-Phase: asking for player name and game mode
+// Setup-Phase: ask player for name, game mode and initialize the appropriate game mode instance
 void Game::setupPlayer() {
-    std::string name;
-    GameModeType mode;
-    int n_objects = 0;
-    m_gui.showMainMenuWindow(name, mode, n_objects);
+    std::string playerName;
+    GameModeType selectedMode;
+    int numObjects = 0;
 
-    m_player.setName(name);
+    // Open main menu GUI window to get player name, mode and optional object count
+    m_gui.showMainMenuWindow(playerName, selectedMode, numObjects);
 
-    // Choose game mode (later part of game mode class)
-    m_gameMode = mode;
-
-    //std::unique_ptr<GameMode> m_gameModePtr;
+    m_player.setName(playerName);
+    m_gameMode = selectedMode;
     
-    if (mode == GameModeType::CatchSquares) {
-        m_gameModePtr = std::make_unique<CatchSquaresMode>(m_player, m_gui, 640, 480, n_objects);
-    } else if (mode == GameModeType::DodgeBalls) {
+    // Initialize game mode instance based on selected mode
+    if (selectedMode == GameModeType::CatchSquares) {
+        m_gameModePtr = std::make_unique<CatchSquaresMode>(m_player, m_gui, 640, 480, numObjects);
+    } else if (selectedMode == GameModeType::DodgeBalls) {
         m_gameModePtr = std::make_unique<DodgeBallsMode>(m_player, m_gui, 640, 480);
+    } else {
+        std::cerr << "[Warning] Unknown game mode selected.\n";
     }
 
-    // Show player information
-    m_gui.printPlayerInfo(m_player, m_gameMode, n_objects);
+    m_gui.printPlayerInfo(m_player, m_gameMode, numObjects);
 }
 
-// Main game loop 
+// Main game loop: captures frames, detacts faces, updates game state and renders output
 void Game::gameLoop() {
     const std::string windowName = "Game Window";
-    cv::namedWindow(windowName, cv::WINDOW_AUTOSIZE);
-    int posX = 80, posY = 10;
-    cv::moveWindow(windowName, posX, posY);
-    
+    const int windowPosX = 80, windowPosY = 10;
+
+    // Skip window creation during testing
+    if (!m_testMode) {
+        cv::namedWindow(windowName, cv::WINDOW_AUTOSIZE);
+        cv::moveWindow(windowName, windowPosX, windowPosY);
+    }
+
     if(!m_gameModePtr) {
-        std::cerr << "Error: Game mode pointer is not initialized!" << std::endl;
+        std::cerr << "[Error] Game mode is not initialized!\n";
         return;
     }
 
     m_gameModePtr->initialize();
 
+    int iterations = 0; // for testing
+
     while(m_gameRunning) {
         cv::Mat frame = m_faceDetector.getProcessedFrame();
 
         if (frame.empty()) {
-            std::cerr << "Error: Empty frame recieved.\n" << std::endl;
+            std::cerr << "[Error] Received empty frame from FaceDetector.\n";
             break;
         }
 
-        std::vector<cv::Rect> faces = m_faceDetector.detectFaces(frame);
+        std::vector<cv::Rect> detectedFaces = m_faceDetector.detectFaces(frame);
 
-        if (!m_gameModePtr->update(frame, faces)) {
+        // Update fame state, if update returns false, end game loop
+        if (!m_gameModePtr->update(frame, detectedFaces)) {
             break;
         }
 
-        // Display the frame
+        if (!m_testMode) {
+            cv::imshow(windowName, frame);
 
-        cv::imshow(windowName, frame);
+            int keyPressed = cv::waitKey(10);
+            if (keyPressed == ESC_KEY) {
+                m_gameRunning = false; 
+            }
+        }
 
-        // Exit loop if ESC key (ASCII 27) is pressed 
-        int key = cv::waitKey(10);
-
-        if (key == 27) {
-            m_gameRunning = false; 
+        if (m_testMode && ++iterations > 1) { // Exit early in tests
+            m_gameRunning = false;
         }
     }
 
-    cv::destroyWindow(windowName);
+    // Close window only if GUI was shown
+    if (!m_testMode) {
+        cv::destroyWindow(windowName);
+    }
+    
 }
 
-// Ends the game 
+// End game sequence: show game over screen and final player score
 void Game::endGame() {
     m_gui.displayGameOver();
     m_gui.displayFinalScore(m_player);
