@@ -33,8 +33,9 @@ Additionally, this project explores head proportions (ratios), which is extended
 
 ## **Build instructions**
 1) Prepare build directory
-   - (optional: Remove-Item -Recurse -Force .\build
-             mkdir build)
+   - (optional:
+   - Remove-Item -Recurse -Force .\build
+   - mkdir build)
    - cd build
 2) Configure with CMake  
    Make sure to adapt `OpenCV_DIR` to your local installation path:
