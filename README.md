@@ -1,7 +1,7 @@
-# Head Reaction Game
+# Head Reactio Game
 
 ## Project Overview
-This project is called **Head Reaction Game**.  
+This project is called **Head Reactio Game**.  
 It uses **OpenCV** for face detection and is written in **C++**.
 
 The current implementation builds a face detection starter program that uses a webcam to detect faces in real-time.  
