@@ -10,14 +10,11 @@ Game::Game(const std::string& cascadePath) : m_faceDetector(cascadePath), m_game
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
     }
 
-
 // Starts game
 void Game::startGame() {
     // Show menu and setup player name in the terminal
     m_gui.displayMenu();
     
-    // m_gui.drawHUD(cv::Mat& frame, const Player& player, GameMode mode); 
-
     setupPlayer();
 
     // Now it should also call display menu window
@@ -50,8 +47,6 @@ void Game::setupPlayer() {
 
     // Choose game mode (later part of game mode class)
     m_gameMode = mode;
-
-    //std::unique_ptr<GameMode> m_gameModePtr;
     
     if (mode == GameModeType::CatchSquares) {
         m_gameModePtr = std::make_unique<CatchSquaresMode>(m_player, m_gui, 640, 480, n_objects);
