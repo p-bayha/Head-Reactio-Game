@@ -17,7 +17,6 @@ std::string getImagePath(const std::string& fileName) {
     return fullPath.string();
 }
 
-
 // Test initialization with valid Haar cascade file
 TEST(FaceDetectorTest, InitializeWithValidCascade) {
     FaceDetector faceDetector(cascadeFilePath);

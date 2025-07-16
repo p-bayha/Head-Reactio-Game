@@ -38,6 +38,7 @@ public:
     // Shows final score and player name
     void displayFinalScore(const Player& player);
 
+    // Needed for testing
     friend class GUITest_ValidateNameRejectsEmpty_Test;
     friend class GUITest_ValidateNameTooLong_Test;
     friend class GUITest_ValidateNameWithInvalidCharacters_Test;
@@ -64,6 +65,7 @@ private:
     void handleKeyboardInput(int key);
     void handleMouseInput(bool& clicked,int x, int y, const std::vector<cv::Rect>& modeButtons);
 
+    // UI layout
     const int m_menuframeWidth = 1280;
     const int m_menuframeHeight = 720;
     const int m_centerX = m_menuframeWidth / 2;

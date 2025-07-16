@@ -54,12 +54,20 @@ file(GLOB TEST_SOURCES ${TEST_DIR}/*.cpp)
 add_executable(FaceDetectionTests 
     tests/test_player.cpp
     src/Player.cpp
+
     tests/test_faceDetector.cpp
     src/FaceDetector.cpp
+
     tests/test_game.cpp
-    #src/game.cpp
+    src/Game.cpp
+
     tests/test_GUI.cpp
     src/GUI.cpp
+
+    src/DodgeBallsMode.cpp
+    src/CatchSquaresMode.cpp
+    src/Circle.cpp
+    src/Square.cpp
     )
 
 # Includes and linking for test executable
@@ -67,7 +75,11 @@ target_include_directories(FaceDetectionTests
     PRIVATE ${INC_DIR} ${TEST_DIR}
 )
 target_link_libraries(FaceDetectionTests
-    PRIVATE GTest::gtest_main ${OpenCV_LIBS}
+    PRIVATE 
+    GTest::gmock_main
+    GTest::gmock
+    GTest::gtest 
+    ${OpenCV_LIBS}
 )
 
 # Register tests with CTest
