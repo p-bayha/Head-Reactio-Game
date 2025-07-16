@@ -8,16 +8,19 @@
 #include <memory>
 
 enum class GameModeType {
-    None,
-    DodgeBalls,
-    CatchSquares
+    None, 
+    DodgeBalls, 
+    CatchSquares 
 };
 
 class GameMode {
-public: 
+public:
     virtual ~GameMode() = default;
+    // Initializes the game mode, resetting any necessary state
     virtual void initialize() = 0;
+    // Updates the game state, processes collisions, and draws the frame
     virtual bool update(cv::Mat& frame, const std::vector<cv::Rect>& faces) = 0;
+    // Returns the current score for the game mode
     virtual int getScore() const = 0;
 };
 
