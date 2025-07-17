@@ -44,6 +44,11 @@ Get-ChildItem -Recurse -Filter FaceDetectionTests.exe
 ```
 
 ### Step 5 – Run the test executable
+If you are already in the same folder as the executable (e.g. `build/Debug`), run:
+```powershell
+& .\FaceDetectionTests.exe
+```
+If you're still in `build/`, run:
 ```powershell
 & .\Debug\FaceDetectionTests.exe
 ```
@@ -56,11 +61,13 @@ Error: Could not load Haar cascade file from haarcascade_frontalface_default.xml
 ### Fix
 Between Step 4 and Step 5 do as follows:
 
-Copy the `haarcascade_frontalface_default.xml` file to the directory where your test executable is located (usually `build/Debug/`):
+Copy the `haarcascade_frontalface_default.xml` file  into the same folder where the test `.exe` is located:
 ```powershell
 Copy-Item "C:\opencv\build\etc\haarcascades\haarcascade_frontalface_default.xml" `
-  -Destination "C:\yourproject_path\build\Debug"
+  -Destination "."
 ```
+Make sure you're inside the folder where `FaceDetectionTests.exe` is when running this!
+
 Alternatively, you can hardcode the full path in your test file temporarily.
 
 ## Test Files Included
