@@ -58,7 +58,7 @@ add_executable(FaceDetectionTests
     tests/test_faceDetector.cpp
     src/FaceDetector.cpp
 
-<    tests/test_game.cpp
+    tests/test_game.cpp
     src/Game.cpp
 
     tests/test_GUI.cpp
