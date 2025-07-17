@@ -3,6 +3,8 @@
 
 #include <string>
 #include <memory> 
+#include <opencv2/opencv.hpp>
+
 #include "Player.hpp"
 #include "FaceDetector.hpp"
 #include "GameMode.hpp"
@@ -14,50 +16,48 @@
  */
 class Game {
 public:
-    // Constructor with path to Haar cascade 
+    // Constructor with path to Haar cascade file
     Game(const std::string& cascadePath);
 
-    // Default destructor
     ~Game() = default;
 
-    // Start the game (setup, initialization, etc.)
+    // Start the game: setup, initialization and main loop
     void startGame();
 
+    void enableTestMode() { m_testMode = true; }
+
+    // Needed for testing
+    std::string getPlayerName() const { return m_player.getName(); }
+    bool isGameRunning() const { return m_gameRunning; }
+    
 private:
-    // Initializes player (name, mode)
+    // Setup player: name, game mode and initialize game mode instance
     void setupPlayer();
 
-    // Core game loop (face detection and gameplay)
+    // Main game loop: process frames, update gameplay, render GUI
     void gameLoop();
 
-    // Ends the game (showa final results etc.)
+    // End the game: display final results and clean up
     void endGame();
 
-    // int updateScore(int points); maybe later or GUI/Player
+    // Spawn and update game objects during gameplay
+    void spawnObjects(); 
+    void updateObjects(cv::Mat& frame, const std::vector<cv::Rect>& faces);
 
     Player m_player;
     FaceDetector m_faceDetector;
     GUI m_gui;
-    GameModeType m_gameMode; // wenn Game Mode implitiert ist, current game mode (1 or 2)
-    std::unique_ptr<GameMode> m_gameModePtr; 
 
-    bool m_gameRunning; // Controls game loop
+    GameModeType m_gameMode; // Current game mode
+    std::unique_ptr<GameMode> m_gameModePtr; // Polymorphic pointer to active game mode implementation
 
+    bool m_gameRunning = false; // Controls the main game loop
+    bool m_testMode = false; // Skip GUI in tests
 
-    void spawnObjects(); //
-    void updateObjects(cv::Mat& frame, const std::vector<cv::Rect>& faces); //
+    std::vector<std::shared_ptr<GameObject>> objects; // Active game object in the scene
 
-    // evtl. löschen da schon in GUI und FaceDetector
-    /*cv::VideoCapture cap;
-    cv::CascadeClassifier faceCascade;
-    const std::string windowName = "Face Detection";*/
-
-    std::vector<std::shared_ptr<GameObject>> objects; //
-   /* int frameWidth;
-    int frameHeight; */
-
-    int spawnTimer = 0; //
-    int mode = 1; //- // Default Mode 1, kannst per Konsole setzen
+    int spawnTimer = 0; // Timer for spawning new objects
+    int mode = 1; // Default mode
 };
 
 #endif // GAME_HPP

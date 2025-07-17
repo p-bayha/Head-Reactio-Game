@@ -2,39 +2,39 @@
 #define PLAYER_HPP
 
 #include <string>
-#include <iostream>
 
 /**
  * @brief Represents a single player in the game.
- * Stores the player's name and score and provides methods to access and update them.
+ * The Player class stores the player's name and score. It provides methods to
+ * set and retrieve the na,e, as well as tp modify or set the score. 
+ * The score is always clamped to be non-negative (it never becomes negative).
  */
 class Player {
 public:
-    // Default constructor
     Player() = default;
-
-    // Default destructor
     ~Player() = default;
 
     /// @brief Sets the player's name
-    /// @param name The new name for the player.
+    /// @param name The new name to assign to the player.
     void setName(const std::string& name);
 
-    // Returns the player's name.
+    /// @brief Gets the player's name.
+    /// @return The current name of the player.
     std::string getName() const;
 
-    ///@brief Changes the player's score.
-    ///@param delta Amount to add/subtract from the score (can be negative).
+    ///@brief Modifies the player's score by a delta value.
+    ///@param delta Amount to add or subtract from the score (can be negative).
     void changeScore(int delta);
 
-    /// @brief Sets the player's score.
-    //         Score will be reduced to zero if a negative value is passed.
-    /// @param score The new score value.
+    /// @brief Sets the player's score directly.
+    //         Of the value is negative, it will be clamped to zero.
+    /// @param score The new score to assign to the player.
     void setScore(int score);
 
-    // Gets the current player's score.
-    int getScore() const; //TO DO evtl. in GUI
-
+    /// @brief Gets the current player's score.
+    /// @return The player's score.
+    int getScore() const; 
+    
 private:
     std::string m_name {}; // Default initialized empty string
     int m_score = 0; 
