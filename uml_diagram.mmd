@@ -1,0 +1,166 @@
+# UML-Klassendiagramm für das Spielprojekt
+
+Dieses Dokument enthält das UML-Klassendiagramm für das Spielprojekt, das die Struktur und Beziehungen der verschiedenen Klassen visualisiert.
+
+## Diagramm
+
+```mermaid
+classDiagram
+    direction LR
+
+    subgraph Core Components
+        class Game {
+            -m_player: Player
+            -m_faceDetector: FaceDetector
+            -m_gui: GUI
+            -m_gameMode: GameModeType
+            -m_gameModePtr: unique_ptr~GameMode~
+            -m_gameRunning: bool
+            +Game(cascadePath: const string&)
+            +startGame(): void
+            -setupPlayer(): void
+            -gameLoop(): void
+            -endGame(): void
+        }
+
+        class Player {
+            -m_name: string
+            -m_score: int
+            +setName(name: const string&): void
+            +getName(): const string
+            +changeScore(delta: int): void
+            +setScore(score: int): void
+            +getScore(): const int
+        }
+
+        class FaceDetector {
+            -faceCascade: cv::CascadeClassifier
+            -cap: cv::VideoCapture
+            -m_frameWidth: int
+            -m_frameHeight: int
+            -m_initialized: bool
+            +FaceDetector(cascadePath: const string&)
+            +initialize(): bool
+            +isInitialized(): const bool
+            +getProcessedFrame(): cv::Mat
+            +detectFaces(frame: const cv::Mat&): vector~cv::Rect~
+            -releaseResources(): void
+        }
+
+        class GUI {
+            -m_menuState: MenuConstants
+            -m_menuframeWidth: const int
+            -m_menuframeHeight: const int
+            -m_centerX: const int
+            -m_baseline: int
+            +displayMenu(): void
+            +showMainMenuWindow(playerName: string&, selectedMode: GameModeType&, n_objects: int&): void
+            +drawGameMode(frame: cv::Mat&, currentGameMode: string): void
+            +drawScore(frame: cv::Mat&, score: int): void
+            +drawGameOver(frame: cv::Mat&, player: const Player&): void
+            +printPlayerInfo(player: const Player&, mode: GameModeType, n_objects: int): void
+            +displayGameOver(): void
+            +displayFinalScore(player: const Player&): void
+            -validateName(name: const string&): string
+            -getModeString(mode: GameModeType): string
+            -handleKeyboardInput(key: int): void
+            -handleMouseInput(clicked: bool&, x: int, y: int, modeButtons: const vector~cv::Rect~&): void
+        }
+    end
+
+    subgraph Game Modes
+        class GameMode {
+            <<Abstract>>
+            +initialize()*: void
+            +update(frame: cv::Mat&, faces: const vector~cv::Rect~&)*: bool
+            +getScore()*: int
+        }
+
+        class DodgeBallsMode {
+            -m_player: Player&
+            -m_gui: GUI&
+            -m_frameWidth: int
+            -m_frameHeight: int
+            -m_spawnTimer: int
+            -m_circles: vector~shared_ptr~Circle~~
+            +DodgeBallsMode(player: Player&, gui: GUI&, frameWidth: int, frameHeight: int)
+            +initialize(): void
+            +update(frame: cv::Mat&, faces: const vector~cv::Rect~&): bool
+            +getScore(): const int
+        }
+
+        class CatchSquaresMode {
+            -m_player: Player&
+            -m_gui: GUI&
+            -m_frameWidth: int
+            -m_frameHeight: int
+            -m_spawnTimer: int
+            -m_remainingObjects: int
+            -m_objects: vector~shared_ptr~GameObject~~
+            +CatchSquaresMode(player: Player&, gui: GUI&, frameWidth: int, frameHeight: int, totalObjects: int)
+            +initialize(): void
+            +update(frame: cv::Mat&, faces: const vector~cv::Rect~&): bool
+            +getScore(): const int
+        }
+    end
+
+    subgraph Game Objects
+        class GameObject {
+            <<Abstract>>
+            #m_color: cv::Scalar
+            #m_size: Size
+            #m_speed: Speed
+            #m_position: Position
+            +GameObject(color: cv::Scalar, size: Size, speed: Speed, pos: Position)
+            +getPosition(): Position
+            +getSize(): Size
+            +move()*: void
+            +draw(frame: cv::Mat&)*: void
+            +checkCollision(face: const cv::Rect&)*: bool
+        }
+
+        class Circle {
+            +Circle(color: cv::Scalar, size: Size, speed: Speed, pos: Position)
+            +move(): void
+            +draw(frame: cv::Mat&): void
+            +checkCollision(face: const cv::Rect&): bool
+            +intersects(face: const cv::Rect&): bool
+        }
+
+        class Square {
+            +Square(color: cv::Scalar, size: Size, speed: Speed, pos: Position)
+            +move(): void
+            +draw(frame: cv::Mat&): void
+            +checkCollision(face: const cv::Rect&): bool
+        }
+
+        class Utils {
+            <<Structs>>
+            Size
+            Speed
+            Position
+            Color
+        }
+    end
+
+    %% Beziehungen
+    Game "1" *-- "1" Player : Aggregation
+    Game "1" *-- "1" FaceDetector : Aggregation
+    Game "1" *-- "1" GUI : Aggregation
+    Game "1" o-- "1" GameMode : Komposition
+
+    DodgeBallsMode --|> GameMode : Vererbung
+    CatchSquaresMode --|> GameMode : Vererbung
+
+    DodgeBallsMode ..> Player : Assoziation
+    DodgeBallsMode ..> GUI : Assoziation
+    CatchSquaresMode ..> Player : Assoziation
+    CatchSquaresMode ..> GUI : Assoziation
+
+    Circle --|> GameObject : Vererbung
+    Square --|> GameObject : Vererbung
+
+    DodgeBallsMode "1" o-- "*" Circle : Komposition
+    CatchSquaresMode "1" o-- "*" GameObject : Komposition
+
+    GameObject ..> Utils : Abhängigkeit
