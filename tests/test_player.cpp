@@ -49,5 +49,3 @@ TEST(PlayerTest, SetScoreNegativeResetsToZero) {
     p.setScore(-10);
     EXPECT_EQ(p.getScore(), 0);
 }
-
-
