@@ -54,10 +54,12 @@ If the test `FaceDetectorTest.InitializeWithValideCascade` fails, it is usually 
 Error: Could not load Haar cascade file from haarcascade_frontalface_default.xml
 ```
 ### Fix
+Between Step 4 and Step 5 do as follows:
+
 Copy the `haarcascade_frontalface_default.xml` file to the directory where your test executable is located (usually `build/Debug/`):
 ```powershell
 Copy-Item "C:\opencv\build\etc\haarcascades\haarcascade_frontalface_default.xml" `
-  -Destination "C:\Users\yourname\yourproject\build\Debug"
+  -Destination "C:\yourproject_path\build\Debug"
 ```
 Alternatively, you can hardcode the full path in your test file temporarily.
 
