@@ -66,7 +66,7 @@ static constexpr double HELP_FONT_SCALE = 0.6;
 static constexpr double INSTRUCTION_FONT_SCALE = 0.7;
 static constexpr double START_FONT_SCALE = 1.0;
 
-// Menu tet thickness
+// Menu text thickness
 static constexpr int TITLE_THICKNESS = 2;
 static constexpr int NAME_THICKNESS = 2;
 static constexpr int CURSOR_THICKNESS = 2;
