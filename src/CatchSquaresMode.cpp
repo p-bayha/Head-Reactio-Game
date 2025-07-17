@@ -20,7 +20,7 @@ bool CatchSquaresMode::update(cv::Mat& frame, const std::vector<cv::Rect>& faces
     if (m_remainingObjects > 0 && ++m_spawnTimer >= 20) {
         m_spawnTimer = 0;
         int size = 20 + (std::rand() % 30);
-        float speed = 3.0f + static_cast<float>(std::rand() % 40) / 10.0f;
+        float speed = 6.0f + static_cast<float>(std::rand() % 60) / 10.0f; // Random fall speed
         cv::Point pos(std::rand() % m_frameWidth, 0);
 
         // Randomly spawn either a red circle or a green square at the top

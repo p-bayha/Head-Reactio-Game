@@ -11,7 +11,6 @@
 // Game mode where the player must catch squares and avoid circles
 class CatchSquaresMode : public GameMode {
 public:
-    // Constructor: initializes the mode with references to the player, GUI, frame dimensions, and total number of objects
     CatchSquaresMode(Player& player, GUI& gui, int frameWidth, int frameHeight, int totalObjects);
     // Resets the game state for a new round
     void initialize() override;
