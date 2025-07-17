@@ -90,6 +90,18 @@ Copy-Item "C:\opencv\build\etc\haarcascades\haarcascade_frontalface_default.xml"
 Copy-Item "C:\opencv\build\x64\vc16\bin\*.dll" -Destination "."
 .\FaceDetectionStarter.exe
 ```
+---
+### Game Instructions:
+Once the menu appears, follow these steps:
+1)  Enter your name and press `Enter`.
+2)  Select a game mode using the W/S keys or mouse.
+3)  If you choose Mode 2 – Catch the Squares:
+     - Press `D` to input the number of falling objects.
+     - Press `A` to go back and switch the game mode.
+4) Press `Enter` to **start the game**.
+5) Enjoy! 😁
+
+---
 ### Run Unit Tests
 For unit tests, refer to the separate test documentation:
 ```
