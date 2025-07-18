@@ -9,55 +9,76 @@ classDiagram
             -m_gameMode: GameModeType
             -m_gameModePtr: unique_ptr~GameMode~
             -m_gameRunning: bool
+            -m_testMode: bool
+            -objects: vector~shared_ptr~GameObject~~
+            -spawnTimer: int
+            -mode: int
             +Game(cascadePath: const string&)
             +startGame(): void
+            +enableTestMode(): void
+            +getPlayerName(): string
+            +isGameRunning(): bool
             -setupPlayer(): void
             -gameLoop(): void
             -endGame(): void
+            -spawnObjects(): void
+            -updateObjects(frame: cv::Mat&, faces: const vector~cv::Rect~&): void
         }
 
         class Player {
             -m_name: string
             -m_score: int
             +setName(name: const string&): void
-            +getName(): const string
+            +getName(): string
             +changeScore(delta: int): void
             +setScore(score: int): void
-            +getScore(): const int
+            +getScore(): int
         }
 
         class FaceDetector {
             -faceCascade: cv::CascadeClassifier
             -cap: cv::VideoCapture
+            -m_windowName: string
+            -m_lastDetectedFaces: vector~cv::Rect~
             -m_frameWidth: int
             -m_frameHeight: int
             -m_initialized: bool
             +FaceDetector(cascadePath: const string&)
             +initialize(): bool
-            +isInitialized(): const bool
+            +isInitialized(): bool
             +getProcessedFrame(): cv::Mat
             +detectFaces(frame: const cv::Mat&): vector~cv::Rect~
             -releaseResources(): void
+            -getDefaultFaceRect(frame: const cv::Mat&): cv::Rect
         }
 
         class GUI {
             -m_menuState: MenuConstants
             -m_menuframeWidth: const int
             -m_menuframeHeight: const int
+            -m_screenWidth: const int
+            -m_screenHeight: const int
             -m_centerX: const int
             -m_baseline: int
+            -m_posX: const int
+            -m_posY: const int
             +displayMenu(): void
+            +printPlayerInfo(player: const Player&, mode: GameModeType, n_objects: int): void
+            +displayGameOver(): void
+            +displayFinalScore(player: const Player&): void
             +showMainMenuWindow(playerName: string&, selectedMode: GameModeType&, n_objects: int&): void
             +drawGameMode(frame: cv::Mat&, currentGameMode: string): void
             +drawScore(frame: cv::Mat&, score: int): void
             +drawGameOver(frame: cv::Mat&, player: const Player&): void
-            +printPlayerInfo(player: const Player&, mode: GameModeType, n_objects: int): void
-            +displayGameOver(): void
-            +displayFinalScore(player: const Player&): void
-            -validateName(name: const string&): string
-            -getModeString(mode: GameModeType): string
+            +validateName(name: const string&): string
             -handleKeyboardInput(key: int): void
             -handleMouseInput(clicked: bool&, x: int, y: int, modeButtons: const vector~cv::Rect~&): void
+            -drawTitle(menuFrame: cv::Mat&): void
+            -drawNameInput(menuFrame: cv::Mat&): void
+            -drawGameModeButtons(menuFrame: cv::Mat&, gameModes: vector~string~, modeButtons: vector~cv::Rect~&): void
+            -drawErrorMessage(menuFrame: cv::Mat&, gameModes: vector~string~, modeButtons: vector~cv::Rect~&): void
+            -drawInstructions(menuFrame: cv::Mat&): void
+            -getModeString(mode: GameModeType): string
         }
     end
 
@@ -79,7 +100,7 @@ classDiagram
             +DodgeBallsMode(player: Player&, gui: GUI&, frameWidth: int, frameHeight: int)
             +initialize(): void
             +update(frame: cv::Mat&, faces: const vector~cv::Rect~&): bool
-            +getScore(): const int
+            +getScore(): int
         }
 
         class CatchSquaresMode {
@@ -93,7 +114,7 @@ classDiagram
             +CatchSquaresMode(player: Player&, gui: GUI&, frameWidth: int, frameHeight: int, totalObjects: int)
             +initialize(): void
             +update(frame: cv::Mat&, faces: const vector~cv::Rect~&): bool
-            +getScore(): const int
+            +getScore(): int
         }
     end
 
@@ -157,3 +178,4 @@ classDiagram
     CatchSquaresMode "1" o-- "*" GameObject : Komposition
 
     GameObject ..> Utils : Abhängigkeit
+
