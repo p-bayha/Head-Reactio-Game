@@ -26,7 +26,7 @@ public:
     Size getSize() const { return m_size; }
 
 protected: 
-    //Description/Variables of the Object
+    // Description/Variables of the Object
     cv::Scalar m_color; 
     Size m_size; 
     Speed m_speed; 

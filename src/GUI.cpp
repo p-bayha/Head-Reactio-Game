@@ -116,8 +116,8 @@ void GUI::drawGameOver(cv::Mat& frame, const Player& player) {
     cv::Point center((frame.cols - textSize.width) / 2, (frame.rows + textSize.height) / 2 - 50);
     cv::putText(frame, gameOverText, center, gameOverFont, 2.5, redColor, 5);
 
-    // Name text
-    std::string nameText = "Name: " + player.getName();
+    // Player text
+    std::string nameText = "Player: " + player.getName();
     cv::Size nameSize = cv::getTextSize(nameText, HUD_FONT, 1.0, 2, &m_baseline);
     cv::Point namePos((frame.cols - nameSize.width) / 2, center.y + 70);
     cv::putText(frame, nameText, namePos, HUD_FONT, 1.0, whiteColor, 2);

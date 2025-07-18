@@ -26,7 +26,7 @@ public:
 
     void enableTestMode() { m_testMode = true; }
 
-    // Needed for testing
+    // Needed public for testing
     std::string getPlayerName() const { return m_player.getName(); }
     bool isGameRunning() const { return m_gameRunning; }
     
